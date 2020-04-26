@@ -130,3 +130,7 @@ dmypy.json
 
 # vscode
 .vscode
+
+# Ne objavi slovarjev na git
+slovarji/*
+!slovarji/.gitkeep 
