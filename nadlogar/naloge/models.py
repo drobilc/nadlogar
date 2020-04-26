@@ -8,7 +8,8 @@ from naloge.generatorji.najdi_vsiljivca import *
 # Seznam razredov vseh generatorjev, ki so uporabniku na voljo
 GENERATORJI = [
     VstaviUstreznoOblikoGenerator,
-    NajdiVsiljivcaSpol
+    NajdiVsiljivcaSpol,
+    NajdiVsiljivcaBesednaVrsta
 ]
 
 class Naloga(models.Model):
