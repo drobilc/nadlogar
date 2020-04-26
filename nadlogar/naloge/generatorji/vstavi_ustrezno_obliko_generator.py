@@ -1,4 +1,6 @@
 from .solski_slovar import SolskiSlovarGenerator
+import random
+from lxml import etree
 
 class VstaviUstreznoOblikoGenerator(SolskiSlovarGenerator):
 

@@ -57,4 +57,4 @@ class Naloga(models.Model):
         # Glede na ime generatorja, najprej poiscemo razred v slovarju
         # GENERATOR_DICT in iz razreda poberemo staticno spremenljivko PREDLOGA
         generator = self.GENERATOR_DICT[self.generator]
-        return 'naloge/primeri/{ime}.html'.format(ime_predloge=generator.PREDLOGA)
+        return 'naloge/{ime_predloge}.html'.format(ime_predloge=generator.PREDLOGA)
