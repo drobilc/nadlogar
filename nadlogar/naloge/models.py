@@ -2,11 +2,13 @@ import random
 from django.db import models
 
 # Vkljucevanje generatorjev nalog iz modula generatorji
-from naloge.generatorji.vstavi_ustrezno_obliko_generator import VstaviUstreznoOblikoGenerator
+from naloge.generatorji.vstavi_ustrezno_obliko import VstaviUstreznoOblikoGenerator
+from naloge.generatorji.najdi_vsiljivca import *
 
 # Seznam razredov vseh generatorjev, ki so uporabniku na voljo
 GENERATORJI = [
-    VstaviUstreznoOblikoGenerator
+    VstaviUstreznoOblikoGenerator,
+    NajdiVsiljivcaSpol
 ]
 
 class Naloga(models.Model):
