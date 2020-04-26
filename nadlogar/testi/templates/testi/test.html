@@ -4,13 +4,17 @@
 
 {% block vsebina %}
 
-    <h2 class="uk-heading-bullet">Test <strong>{{ test.naslov }}</strong></h1>
-    <p>{{ test.opis }}</p>
+    <div id="uvod" class="uk-margin-large">
+        <h2 class="uk-heading-bullet">Test <strong>{{ test.naslov }}</strong></h1>
+        <p>{{ test.opis }}</p>
+    </div>
 
     <div id="naloge">
-        {% for naloga in naloge %}
-            {% include naloga.ime_predloge with naloga=naloga indeks=forloop.counter %}
-        {% endfor %}
+        <div class="naloga uk-margin-large">
+            {% for naloga in naloge %}
+                {% include naloga.ime_predloge with naloga=naloga indeks=forloop.counter %}
+            {% endfor %}
+        </div>
     </div>
 
 {% endblock %}
