@@ -8,4 +8,4 @@ def index(request):
 
 def podrobnosti(request, pk: int):
     test: Test = get_object_or_404(Test, pk=pk)
-    return render(request, 'testi/test.html', {'test': test})
+    return render(request, 'testi/test.html', {'test': test, 'naloge': test.naloge.all()})
