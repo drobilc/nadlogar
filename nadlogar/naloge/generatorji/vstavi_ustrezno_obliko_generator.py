@@ -36,7 +36,10 @@ class VstaviUstreznoOblikoGenerator(SolskiSlovarGenerator):
             zgled_besedilo = etree.tostring(zgled, method='text', encoding='unicode')
             
             # print(zgled_besedilo.replace(iztocnica_zgleda, '______ ({})'.format(iztocnica)))
-            pred, po = zgled_besedilo.split(iztocnica_zgleda)
-            generirani_primeri.append({'pred': pred, 'iztocnica': iztocnica, 'po': po, 'resitev': iztocnice_zgleda})
+            try:
+                pred, po = zgled_besedilo.split(iztocnica_zgleda)
+                generirani_primeri.append({'pred': pred, 'iztocnica': iztocnica, 'po': po, 'resitev': iztocnice_zgleda})
+            except Exception:
+                pass
         
         return generirani_primeri
