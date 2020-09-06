@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block naslov %}Seznam testov{% endblock %}
+
+{% block vsebina %}
+<div class="container mt-5">
+
+    <h2>Seznam testov</h2>
+
+    <ul class="list-group">
+        {% for test in seznam_testov %}
+            <a href="{% url 'naloge:test_podrobnosti' test.id %}" class="list-group-item list-group-item-action">{{ test.naslov }}</a>
+        {% empty %}
+            <p>Trenutno nimate še nobenega testa.</p>
+        {% endfor %}
+    </ul>
+
+</div>
+{% endblock %}

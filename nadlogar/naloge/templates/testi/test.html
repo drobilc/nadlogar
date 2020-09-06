@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block naslov %}Test {{ test.naslov }}{% endblock %}
+
+{% block vsebina %}
+<div class="container mt-5">
+
+    <h2>{{ test.naslov }}</h2>
+    <p>{{ test.opis }}</p>
+
+</div>
+{% endblock %}
