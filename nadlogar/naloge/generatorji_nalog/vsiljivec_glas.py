@@ -16,8 +16,6 @@ class NalogaGlasVsiljivec(GeneratorNalog):
         # Odpremo solski slovar in si v objekt shranimo koren xml drevesa DOC
         with open('slovarji/solski_slovar.xml', 'r', encoding='utf-8') as slovar:
             self.slovar = etree.parse(slovar)
-
-        self.primeri = self.generiraj_primere(self.beseda)
     
     def generiraj_primere(self, beseda):        
         return [self.generiraj_primer(glas) for glas in beseda]

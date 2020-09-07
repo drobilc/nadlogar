@@ -13,8 +13,6 @@ class NalogaDolociSlovnicnoStevilo(GeneratorNalog):
         # Odpremo solski slovar in si v objekt shranimo koren xml drevesa DOC
         with open('slovarji/solski_slovar.xml', 'r', encoding='utf-8') as slovar:
             self.slovar = etree.parse(slovar)
-
-        self.primeri = self.generiraj_primere(self.stevilo_primerov)
     
     def generiraj_primere(self, stevilo_primerov=6):
         gesla = self.slovar.xpath('//geslo[oblike/dvojina/following-sibling::množina]')
