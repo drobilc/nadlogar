@@ -71,3 +71,15 @@ class Naloga(models.Model):
 
     def __str__(self):
         return f'{self.test}: {self.get_generator_display()}, stevilo_primerov: {self.stevilo_primerov}'
+    
+    def generator_nalog(self):
+        # Glede na ime razreda generatorja poiscemo dejanski razred
+        generator_razred = Naloga.GENERATOR_DICT[self.generator]
+        # Ustvarimo nov objekt, ki pripada razredu, kot argumente mu podamo:
+        #   * podatki - slovar s podatki s pomocjo katerega se zna objekt naloga
+        #     nazaj sestaviti (obnoviti seznam primerov)
+        #   * navodila - navodila naloge
+        #   * stevilo_primerov - koliko primerov zelimo zgenerirati (nekatere
+        #     naloge ta argument preprosto spregledajo in uporabnijo podatke iz
+        #     slovarja podatki)
+        return generator_razred({}, navodila=self.navodila, stevilo_primerov=self.stevilo_primerov)

@@ -7,15 +7,14 @@ class NalogaDolociSlovnicnoStevilo(GeneratorNalog):
     IME = 'Določevanje slovničnega števila'
     NAVODILA = 'Besedam določi slovnično število in jih vstavi v preglednico.'
     
-    def __init__(self, navodila, stevilo_primerov=6):
-        self.navodila = navodila
-        self.stevilo_primerov = stevilo_primerov
+    def __init__(self, *args, **kwargs):
+        super(NalogaDolociSlovnicnoStevilo, self).__init__(*args, **kwargs)
 
         # Odpremo solski slovar in si v objekt shranimo koren xml drevesa DOC
         with open('slovarji/solski_slovar.xml', 'r', encoding='utf-8') as slovar:
             self.slovar = etree.parse(slovar)
 
-        self.primeri = self.generiraj_primere(stevilo_primerov)
+        self.primeri = self.generiraj_primere(self.stevilo_primerov)
     
     def generiraj_primere(self, stevilo_primerov=6):
         gesla = self.slovar.xpath('//geslo[oblike/dvojina/following-sibling::množina]')

@@ -6,16 +6,18 @@ class NalogaGlasVsiljivec(GeneratorNalog):
 
     IME = 'Izloči vsiljivca - glas'
     NAVODILA = 'Kateri glas v vrstici je vsiljivec? Obkroži samoglasnik ali soglasnik.'
+
+    PRIVZETA_BESEDA = 'glasovi'
     
-    def __init__(self, navodila, beseda, stevilo_primerov=6):
-        self.navodila = navodila
-        self.beseda = beseda
+    def __init__(self, *args, **kwargs):
+        super(NalogaGlasVsiljivec, self).__init__(*args, **kwargs)
+        self.beseda = self.podatki['beseda'] if 'beseda' in self.podatki else NalogaGlasVsiljivec.PRIVZETA_BESEDA
 
         # Odpremo solski slovar in si v objekt shranimo koren xml drevesa DOC
         with open('slovarji/solski_slovar.xml', 'r', encoding='utf-8') as slovar:
             self.slovar = etree.parse(slovar)
 
-        self.primeri = self.generiraj_primere(beseda)
+        self.primeri = self.generiraj_primere(self.beseda)
     
     def generiraj_primere(self, beseda):        
         return [self.generiraj_primer(glas) for glas in beseda]

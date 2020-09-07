@@ -134,3 +134,6 @@ dmypy.json
 # Ne objavi slovarjev na git
 nadlogar/slovarji/*
 !nadlogar/slovarji/.gitkeep
+
+# Ne objavi pdf dokumentov iz mape media
+media/*.pdf

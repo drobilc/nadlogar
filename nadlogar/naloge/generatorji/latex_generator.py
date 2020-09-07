@@ -1,5 +1,6 @@
 from .visitor import Visitor
-from ..naloge import *
+from ..generatorji_nalog import *
+from ..models import Test
 
 from pylatex import Document, Command, Tabular, Center
 from pylatex.utils import italic, NoEscape
@@ -25,11 +26,12 @@ class LatexGenerator(Visitor):
             options=Options('brez vpisne', naloge=0)
         )
         latex_ukazi = [ukaz_izpit]
-        for naloga in test.naloge:
-            latex_ukazi.extend(naloga.accept(self, latex_document))
+        for naloga in test.naloge.all():
+            naloga_generator = naloga.generator_nalog()
+            latex_ukazi.extend(naloga_generator.accept(self, latex_document))
         return latex_ukazi
     
-    def visit_naloga(self, naloga: Naloga, latex_document):
+    def visit_naloga(self, naloga: GeneratorNalog, latex_document):
         if isinstance(naloga, NalogaIzlociVsiljivca):
             return self.visit_izloci_vsiljivca_naloga(naloga, latex_document)
         elif isinstance(naloga, NalogaVstaviUstreznoObliko):

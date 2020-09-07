@@ -7,15 +7,14 @@ class NalogaVstaviUstreznoObliko(GeneratorNalog):
     IME = 'Vstavi ustrezno obliko besede'
     NAVODILA = 'Postavi besede v ustrezno obliko in dopolni povedi.'
     
-    def __init__(self, navodila, stevilo_primerov=6):
-        self.navodila = navodila
-        self.stevilo_primerov = stevilo_primerov
+    def __init__(self, *args, **kwargs):
+        super(NalogaVstaviUstreznoObliko, self).__init__(*args, **kwargs)
 
         # Odpremo solski slovar in si v objekt shranimo koren xml drevesa DOC
         with open('slovarji/solski_slovar.xml', 'r', encoding='utf-8') as slovar:
             self.slovar = etree.parse(slovar)
 
-        self.primeri = self.generiraj_primere(stevilo_primerov)
+        self.primeri = self.generiraj_primere(self.stevilo_primerov)
     
     def generiraj_primere(self, stevilo_primerov=6):
         self.zgledi = self.slovar.xpath('//geslo/pomen/S-zgled')
