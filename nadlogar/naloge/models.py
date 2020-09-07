@@ -56,6 +56,7 @@ class Naloga(models.Model):
 
     navodila = models.TextField(blank=True)
     stevilo_primerov = models.PositiveSmallIntegerField()
+    podatki = models.JSONField(null=True, blank=True)
 
     class Meta:
         default_related_name = 'naloge'
@@ -82,4 +83,4 @@ class Naloga(models.Model):
         #   * stevilo_primerov - koliko primerov zelimo zgenerirati (nekatere
         #     naloge ta argument preprosto spregledajo in uporabnijo podatke iz
         #     slovarja podatki)
-        return generator_razred({}, navodila=self.navodila, stevilo_primerov=self.stevilo_primerov)
+        return generator_razred(self.podatki, navodila=self.navodila, stevilo_primerov=self.stevilo_primerov)
