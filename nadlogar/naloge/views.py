@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import get_object_or_404, render, redirect, reverse
 from django.http import HttpResponse
 from django.conf import settings
 import uuid
@@ -7,7 +7,7 @@ from .models import Test, Naloga
 from .generatorji.latex_generator import LatexGenerator
 
 def index(request):
-    return render(request, 'testi/landing_page.html')
+    return render(request, 'landing_page.html')
 
 def seznam_dokumentov(request):
     seznam_testov = Test.objects.all()
@@ -16,6 +16,11 @@ def seznam_dokumentov(request):
 def podrobnosti_delovnega_lista(request, id_delovnega_lista: int):
     test: Test = get_object_or_404(Test, pk=id_delovnega_lista)
     return render(request, 'testi/test.html', {'test': test, 'naloge': test.naloge.all()})
+
+def ustvari_delovni_list(request):
+    nov_delovni_list = Test.prazen_dokument()
+    nov_delovni_list.save()
+    return redirect(reverse('naloge:urejanje_delovnega_lista', kwargs={'id_delovnega_lista' : nov_delovni_list.id }))
 
 def urejanje_delovnega_lista(request, id_delovnega_lista: int):
     return HttpResponse('Urejanje delovnega lista {}'.format(id_delovnega_lista))

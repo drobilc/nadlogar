@@ -1,5 +1,6 @@
-import random
 from django.db import models
+from django.conf import settings
+import django.utils.timezone
 
 from naloge.generatorji_nalog import *
 
@@ -26,12 +27,14 @@ class Test(models.Model):
 
     def __str__(self):
         return f'{self.naslov} ({self.datum})'
-
-    def ustvari_nadlogo(self):
-        primeri = []
-        for naloga in self.naloge.all():
-            primeri.append((naloga.ustvari_primer(), naloga))
-        return primeri
+    
+    @staticmethod
+    def prazen_dokument():
+        return Test(
+            naslov=settings.PRAZEN_DOKUMENT['naslov'],
+            opis=settings.PRAZEN_DOKUMENT['opis'],
+            datum=django.utils.timezone.now().date()
+        )
 
 
 class Naloga(models.Model):

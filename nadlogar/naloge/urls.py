@@ -13,6 +13,9 @@ urlpatterns = [
     # Seznam vseh dokumentov dolocenega uporabnika
     path('dokumenti', views.seznam_dokumentov, name='seznam_dokumentov'),
 
+    # Ustvarjanje novega dokumenta
+    path('dokument/nov', views.ustvari_delovni_list, name='ustvari_delovni_list'),
+
     # Predogled dolocenega delovnega lista
     path('dokument/<int:id_delovnega_lista>', views.podrobnosti_delovnega_lista, name='podrobnosti_delovnega_lista'),
 
