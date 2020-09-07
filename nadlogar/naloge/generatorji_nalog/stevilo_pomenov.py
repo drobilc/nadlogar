@@ -8,13 +8,11 @@ class NalogaDolociSteviloPomenov(GeneratorNalog):
     NAVODILA = 'Koliko pomenov imajo naslednje besede v slovarju Franček?'
     
     def __init__(self, *args, **kwargs):
-        super(NalogaIzlociVsiljivca, self).__init__(*args, **kwargs)
+        super(NalogaDolociSteviloPomenov, self).__init__(*args, **kwargs)
 
         # Odpremo solski slovar in si v objekt shranimo koren xml drevesa DOC
         with open('slovarji/solski_slovar.xml', 'r', encoding='utf-8') as slovar:
             self.slovar = etree.parse(slovar)
-        
-        self.primeri = self.generiraj_primere(self.stevilo_primerov)
     
     def generiraj_primere(self, stevilo_primerov=6):
         self.stevila_pomenov = []

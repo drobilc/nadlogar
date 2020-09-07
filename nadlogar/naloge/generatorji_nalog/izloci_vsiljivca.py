@@ -13,8 +13,6 @@ class NalogaIzlociVsiljivca(GeneratorNalog):
         # Odpremo solski slovar in si v objekt shranimo koren xml drevesa DOC
         with open('slovarji/solski_slovar.xml', 'r', encoding='utf-8') as slovar:
             self.slovar = etree.parse(slovar)
-
-        self.primeri = self.generiraj_primere(self.stevilo_primerov)
     
     def sestavi_skupine(self):
         return {}

@@ -1,12 +1,24 @@
 {% extends "base.html" %}
 
-{% block naslov %}Test {{ test.naslov }}{% endblock %}
+{% load naloga_v_html %}
+
+{% block naslov %}Delovni list - {{ test.naslov }}{% endblock %}
 
 {% block vsebina %}
-<div class="container">
+<div class="container is-narrow">
 
     <h2>{{ test.naslov }}</h2>
     <p>{{ test.opis }}</p>
+
+    <div id="naloge" class="mb-5">
+        {% for naloga in naloge %}
+            <div class="naloga mt-3">
+                <div class="primeri">
+                    {{ naloga.generator_nalog | naloga_v_html }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 
 </div>
 {% endblock %}

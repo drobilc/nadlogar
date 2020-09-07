@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load naloga_v_html %}
+
 {% block naslov %}Urejanje {{ delovni_list.naslov }}{% endblock %}
 
 {% block vsebina %}
@@ -23,14 +25,14 @@
     <div id="naloge" class="mb-5">
         {% for naloga in naloge %}
             <div class="naloga mt-3">
-                {{ naloga.navodila }}
-            </div>
-        {% empty %}
-            <div class="text-center naloga">
-                <p>V delovnem listu trenutno še ni nobene naloge.</p>
-                <button class="btn btn-primary align-self-md-center">Dodaj nalogo</button>
+                <div class="primeri">
+                    {{ naloga.generator_nalog | naloga_v_html }}
+                </div>
             </div>
         {% endfor %}
+        <div id="dodaj-nalogo" class="text-center mt-4">
+            <button class="btn btn-primary align-self-md-center">Dodaj nalogo</button>
+        </div>
     </div>
 
 </div>
