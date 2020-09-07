@@ -1,12 +1,37 @@
 {% extends "base.html" %}
 
-{% block naslov %}Urejanje {{ test.naslov }}{% endblock %}
+{% block naslov %}Urejanje {{ delovni_list.naslov }}{% endblock %}
 
 {% block vsebina %}
-<div class="container">
+<div class="container is-narrow">
 
-    <h2>{{ test.naslov }}</h2>
-    <p>{{ test.opis }}</p>
+    <div id="podatki-dokumenta">
+        <label for="naslov-dokumenta" class="special-label">Osnovni podatki delovnega lista</label>
+        
+        <div class="form-group">
+            <input type="text" class="form-control title-input-field" id="naslov-dokumenta" name="naslov_dokumenta" value="{{ delovni_list.naslov }}">
+        </div>
+    
+        <div class="form-group">
+            <textarea name="opis_dokumenta" id="opis-dokumenta" rows="4" class="form-control">{{ delovni_list.opis }}</textarea>
+        </div>
+
+    </div>
+
+    <label class="special-label mt-4">Naloge</label>
+
+    <div id="naloge" class="mb-5">
+        {% for naloga in naloge %}
+            <div class="naloga mt-3">
+                {{ naloga.navodila }}
+            </div>
+        {% empty %}
+            <div class="text-center naloga">
+                <p>V delovnem listu trenutno še ni nobene naloge.</p>
+                <button class="btn btn-primary align-self-md-center">Dodaj nalogo</button>
+            </div>
+        {% endfor %}
+    </div>
 
 </div>
 {% endblock %}

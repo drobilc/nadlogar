@@ -24,7 +24,7 @@ def ustvari_delovni_list(request):
 
 def urejanje_delovnega_lista(request, id_delovnega_lista: int):
     test: Test = get_object_or_404(Test, pk=id_delovnega_lista)
-    return render(request, 'testi/urejanje_dokumenta.html', {'test': test, 'naloge': test.naloge.all()})
+    return render(request, 'testi/urejanje_dokumenta.html', {'delovni_list': test, 'naloge': test.naloge.all()})
 
 def generiraj_delovni_list(request, id_delovnega_lista: int):
     test: Test = get_object_or_404(Test, pk=id_delovnega_lista)
