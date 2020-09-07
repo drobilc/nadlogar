@@ -9,7 +9,7 @@
 
     <ul class="list-group">
         {% for test in seznam_testov %}
-            <a href="{% url 'naloge:test_podrobnosti' test.id %}" class="list-group-item list-group-item-action">{{ test.naslov }}</a>
+            <a href="{% url 'naloge:podrobnosti_delovnega_lista' test.id %}" class="list-group-item list-group-item-action">{{ test.naslov }}</a>
         {% empty %}
             <p>Trenutno nimate še nobenega testa.</p>
         {% endfor %}

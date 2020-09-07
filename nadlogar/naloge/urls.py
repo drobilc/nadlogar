@@ -6,7 +6,20 @@ from . import views
 
 app_name = 'naloge'
 urlpatterns = [
+
+    # Landing page, kjer se uporabniki seznanijo s produktom
     path('', views.index, name='index'),
-    path('<int:pk>/', views.podrobnosti, name='test_podrobnosti'),
-    path('<int:pk>/pdf', views.test_pdf, name='test_generiraj_pdf'),
+
+    # Seznam vseh dokumentov dolocenega uporabnika
+    path('dokumenti', views.seznam_dokumentov, name='seznam_dokumentov'),
+
+    # Predogled dolocenega delovnega lista
+    path('dokument/<int:id_delovnega_lista>', views.podrobnosti_delovnega_lista, name='podrobnosti_delovnega_lista'),
+
+    # Urejanje delovnega lista
+    path('dokument/<int:id_delovnega_lista>/uredi', views.urejanje_delovnega_lista, name='urejanje_delovnega_lista'),
+
+    # Generiranje pdf dokumenta iz delovnega lista
+    path('dokument/<int:id_delovnega_lista>/pdf', views.generiraj_delovni_list, name='generiraj_delovni_list'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
