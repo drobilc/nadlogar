@@ -136,4 +136,4 @@ nadlogar/slovarji/*
 !nadlogar/slovarji/.gitkeep
 
 # Ne objavi pdf dokumentov iz mape media
-media/*.pdf
+nadlogar/media/*.pdf
