@@ -1,8 +1,8 @@
-from ..models import Naloga
+from .generator_nalog import GeneratorNalog
 from lxml import etree
 import random
 
-class NalogaGlasVsiljivec(Naloga):
+class NalogaGlasVsiljivec(GeneratorNalog):
 
     IME = 'Izloči vsiljivca - glas'
     NAVODILA = 'Kateri glas v vrstici je vsiljivec? Obkroži samoglasnik ali soglasnik.'

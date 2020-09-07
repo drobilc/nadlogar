@@ -1,8 +1,8 @@
-from ..models import Naloga
+from .generator_nalog import GeneratorNalog
 from lxml import etree
 import random
 
-class NalogaVstaviUstreznoObliko(Naloga):
+class NalogaVstaviUstreznoObliko(GeneratorNalog):
 
     IME = 'Vstavi ustrezno obliko besede'
     NAVODILA = 'Postavi besede v ustrezno obliko in dopolni povedi.'

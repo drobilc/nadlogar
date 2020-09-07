@@ -1,8 +1,8 @@
-from ..models import Naloga
+from .generator_nalog import GeneratorNalog
 from lxml import etree
 import random
 
-class NalogaDolociSlovnicnoStevilo(Naloga):
+class NalogaDolociSlovnicnoStevilo(GeneratorNalog):
 
     IME = 'Določevanje slovničnega števila'
     NAVODILA = 'Besedam določi slovnično število in jih vstavi v preglednico.'

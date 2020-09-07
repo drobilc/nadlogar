@@ -1,8 +1,8 @@
-from ..models import Naloga
+from .generator_nalog import GeneratorNalog
 from lxml import etree
 import random
 
-class NalogaIzlociVsiljivca(Naloga):
+class NalogaIzlociVsiljivca(GeneratorNalog):
 
     IME = 'Izloči vsiljivca'
     NAVODILA = 'Izloči vsiljivca'

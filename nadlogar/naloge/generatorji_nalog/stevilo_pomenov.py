@@ -1,8 +1,8 @@
-from ..models import Naloga
+from .generator_nalog import GeneratorNalog
 from lxml import etree
 import random
 
-class NalogaDolociSteviloPomenov(Naloga):
+class NalogaDolociSteviloPomenov(GeneratorNalog):
 
     IME = 'Določi število pomenov - Franček'
     NAVODILA = 'Koliko pomenov imajo naslednje besede v slovarju Franček?'

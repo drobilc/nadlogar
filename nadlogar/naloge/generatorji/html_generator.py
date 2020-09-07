@@ -5,4 +5,4 @@ class HtmlGenerator(Visitor):
     
     @staticmethod
     def generate_html(test: Test):
-        return ''
+        return '<div>{}</div>'.format(test.naslov)

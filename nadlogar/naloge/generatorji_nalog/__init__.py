@@ -1,3 +1,4 @@
+from .generator_nalog import GeneratorNalog
 from .izloci_vsiljivca import *
 from .vstavi_ustrezno_obliko import NalogaVstaviUstreznoObliko
 from .doloci_slovnicno_stevilo import NalogaDolociSlovnicnoStevilo
