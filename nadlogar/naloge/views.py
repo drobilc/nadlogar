@@ -11,11 +11,11 @@ def index(request):
 
 def seznam_dokumentov(request):
     seznam_testov = Test.objects.all()
-    return render(request, 'testi/seznam_testov.html', {'seznam_testov': seznam_testov})
+    return render(request, 'testi/seznam_dokumentov.html', {'seznam_testov': seznam_testov})
 
 def podrobnosti_delovnega_lista(request, id_delovnega_lista: int):
     test: Test = get_object_or_404(Test, pk=id_delovnega_lista)
-    return render(request, 'testi/test.html', {'test': test, 'naloge': test.naloge.all()})
+    return render(request, 'testi/podrobnosti_dokumenta.html', {'test': test, 'naloge': test.naloge.all()})
 
 def ustvari_delovni_list(request):
     nov_delovni_list = Test.prazen_dokument()
@@ -23,7 +23,8 @@ def ustvari_delovni_list(request):
     return redirect(reverse('naloge:urejanje_delovnega_lista', kwargs={'id_delovnega_lista' : nov_delovni_list.id }))
 
 def urejanje_delovnega_lista(request, id_delovnega_lista: int):
-    return HttpResponse('Urejanje delovnega lista {}'.format(id_delovnega_lista))
+    test: Test = get_object_or_404(Test, pk=id_delovnega_lista)
+    return render(request, 'testi/urejanje_dokumenta.html', {'test': test, 'naloge': test.naloge.all()})
 
 def generiraj_delovni_list(request, id_delovnega_lista: int):
     test: Test = get_object_or_404(Test, pk=id_delovnega_lista)
