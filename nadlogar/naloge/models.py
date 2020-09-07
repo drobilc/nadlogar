@@ -36,7 +36,6 @@ class Test(models.Model):
             datum=django.utils.timezone.now().date()
         )
 
-
 class Naloga(models.Model):
 
     # Generatorji nalog se nahajajo v naloge.generatorji. V bazo zapisemo ime
@@ -71,6 +70,14 @@ class Naloga(models.Model):
         if self.navodila is None or len(self.navodila) <= 0:
             generator = self.GENERATOR_DICT[self.generator]
             self.navodila = generator.NAVODILA
+        
+        # Pred shranjevanjem naloge v bazo podatkov, preverimo ali podatki
+        # naloge se niso bili zgenerirani (t.j. v primeru, da ima self.podatki
+        # vrednost None)
+        if self.podatki is None:
+            generator_nalog = self.generator_nalog()
+            self.podatki = generator_nalog.generiraj_nalogo()
+
         super().save(*args, **kwargs)
 
     def __str__(self):
