@@ -11,11 +11,18 @@ class NalogaGlasVsiljivec(GeneratorNalog):
     
     def __init__(self, *args, **kwargs):
         super(NalogaGlasVsiljivec, self).__init__(*args, **kwargs)
-        self.beseda = self.podatki['beseda'] if 'beseda' in self.podatki else NalogaGlasVsiljivec.PRIVZETA_BESEDA
+
+        self.beseda = NalogaGlasVsiljivec.PRIVZETA_BESEDA
+        if self.podatki is not None and 'beseda' in self.podatki:
+            self.beseda = self.podatki['beseda']
 
         # Odpremo solski slovar in si v objekt shranimo koren xml drevesa DOC
         with open('slovarji/solski_slovar.xml', 'r', encoding='utf-8') as slovar:
             self.slovar = etree.parse(slovar)
+    
+    def generiraj_nalogo(self):
+        novi_primeri = self.generiraj_primere(self.beseda)
+        return { 'primeri': novi_primeri, 'beseda': self.beseda }
     
     def generiraj_primere(self, beseda):        
         return [self.generiraj_primer(glas) for glas in beseda]

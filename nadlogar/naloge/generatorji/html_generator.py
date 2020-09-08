@@ -58,14 +58,54 @@ class HtmlGenerator(Visitor):
     def visit_doloci_slovnicno_stevilo_naloga(self, naloga: NalogaDolociSlovnicnoStevilo):
         html = etree.Element('div')
         subelement_with_text(html, 'p', _text=naloga.navodila)
+
+        seznam_primerov = etree.SubElement(html, 'ul')
+        for primer in naloga.primeri():
+
+            tabela = etree.Element('table')
+            tabela.set('class', 'table mt-2 table-bordered')
+            naslovna_vrstica = etree.SubElement(tabela, 'tr')
+            subelement_with_text(naslovna_vrstica, 'th', _text='Ednina')
+            subelement_with_text(naslovna_vrstica, 'th', _text='Dvojina')
+            subelement_with_text(naslovna_vrstica, 'th', _text='Množina')
+            ostale_vrstice = etree.SubElement(tabela, 'tr')
+            etree.SubElement(ostale_vrstice, 'td')
+            etree.SubElement(ostale_vrstice, 'td')
+            etree.SubElement(ostale_vrstice, 'td')
+            ostale_vrstice.set('style', 'height: 100px')
+
+            primer_element = etree.SubElement(seznam_primerov, 'li')
+            primer_element.set('class', 'mt-3')
+            primer_element.text = ', '.join(primer['besede'])
+            primer_element.append(tabela)
+
         return html
     
     def visit_stevilo_pomenov_naloga(self, naloga: NalogaDolociSteviloPomenov):
         html = etree.Element('div')
         subelement_with_text(html, 'p', _text=naloga.navodila)
+
+        tabela = etree.SubElement(html, 'table')
+        for primer in naloga.primeri():
+            vrstica = etree.SubElement(tabela, 'tr')
+            subelement_with_text(vrstica, 'td', _text=primer['beseda'])
+
+            for i in range(1, 5):
+                subelement_with_text(vrstica, 'td', _text=str(i), style='width: 50px; text-align: center;')
+
         return html
     
     def visit_glas_vsiljivec_naloga(self, naloga: NalogaGlasVsiljivec):
         html = etree.Element('div')
         subelement_with_text(html, 'p', _text=naloga.navodila)
+
+        vsebnik = etree.SubElement(html, 'div', style='text-align: center;')
+
+        tabela = etree.SubElement(vsebnik, 'table')
+        tabela.set('class', 'table table-bordered')
+        for primer in naloga.primeri():
+            vrstica = etree.SubElement(tabela, 'tr')
+            for glas in primer['glasovi']:
+                subelement_with_text(vrstica, 'td', _text=glas)
+
         return html
