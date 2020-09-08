@@ -20,9 +20,8 @@ class LatexGenerator(Visitor):
         return latex_document
 
     def visit_test(self, test: Test, latex_document):
-        datum = test.datum if test.datum is not None else Command('today')
         ukaz_izpit = Command('izpit',
-            arguments=[test.naslov, datum, test.opis],
+            arguments=[test.naslov, '', test.opis],
             options=Options('brez vpisne', naloge=0)
         )
         latex_ukazi = [ukaz_izpit]
@@ -47,7 +46,7 @@ class LatexGenerator(Visitor):
     
     def visit_izloci_vsiljivca_naloga(self, naloga: NalogaIzlociVsiljivca, latex_document):
         primeri = []
-        for primer in naloga.primeri:
+        for primer in naloga.primeri():
             primeri.append(Command('podnaloga'))
             for beseda in primer['besede']:
                 primeri.append(beseda)
@@ -57,7 +56,7 @@ class LatexGenerator(Visitor):
     
     def visit_vstavi_ustrezno_obliko_naloga(self, naloga: NalogaIzlociVsiljivca, latex_document):
         primeri = []
-        for primer in naloga.primeri:
+        for primer in naloga.primeri():
             primeri.append(Command('podnaloga'))
             primeri.extend([primer['pred'], '________', ' ({}) '.format(primer['iztocnica']), primer['po']])
 
@@ -76,7 +75,7 @@ class LatexGenerator(Visitor):
             tabela.add_hline()
 
         primeri = []
-        for primer in naloga.primeri:
+        for primer in naloga.primeri():
             primeri.append(Command('podnaloga'))
             primeri.extend([', '.join(primer['besede'])])
             primeri.append(Command('vspace', ['0.5cm']))
@@ -88,10 +87,10 @@ class LatexGenerator(Visitor):
     def visit_stevilo_pomenov_naloga(self, naloga: NalogaDolociSteviloPomenov, latex_document):
         primeri = []
 
-        maksimalno_stevilo_pomenov = max([p['stevilo_pomenov'] for p in naloga.primeri])
+        maksimalno_stevilo_pomenov = max([p['stevilo_pomenov'] for p in naloga.primeri()])
         maksimalno_stevilo_pomenov = max(maksimalno_stevilo_pomenov, 4)
 
-        for primer in naloga.primeri:
+        for primer in naloga.primeri():
             primeri.append(Command('podnaloga'))
             primeri.append(Command('makebox[3cm]', arguments=[primer['beseda']], options=['l']))
             for i in range(1, maksimalno_stevilo_pomenov + 1):
@@ -104,7 +103,7 @@ class LatexGenerator(Visitor):
         
         center = Center()
         with center.create(Tabular('|c|c|c|c|c|')) as tabela:
-            for primer in naloga.primeri:
+            for primer in naloga.primeri():
                 tabela.add_hline()
                 tabela.add_row(primer['glasovi'])
             tabela.add_hline()
