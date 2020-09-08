@@ -1,17 +1,23 @@
 {% extends "base.html" %}
 
-{% block naslov %}Seznam testov{% endblock %}
+{% block naslov %}Moji delovni listi{% endblock %}
 
 {% block vsebina %}
-<div class="container">
+<div class="container is-narrow">
 
-    <h2>Seznam testov</h2>
+    <h2>Moji delovni listi</h2>
+    <p>Spodaj si lahko ogledate delovne liste, ki ste jih ustvarili.</p>
 
     <ul class="list-group">
-        {% for test in seznam_testov %}
-            <a href="{% url 'naloge:podrobnosti_delovnega_lista' test.id %}" class="list-group-item list-group-item-action">{{ test.naslov }}</a>
+        {% for delovni_list in delovni_listi %}
+            <a href="{% url 'naloge:podrobnosti_delovnega_lista' delovni_list.id %}" class="list-group-item list-group-item-action">
+                <div class="d-flex justify-content-between">
+                    <div><strong>{{ delovni_list.naslov }}</strong></div>
+                    <!-- Datum zadnje posodobitve delovnega lista -->
+                </div>
+            </a>
         {% empty %}
-            <p>Trenutno nimate še nobenega testa.</p>
+            <p>Trenutno nimate še nobenega delovnega lista.</p>
         {% endfor %}
     </ul>
 

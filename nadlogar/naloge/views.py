@@ -10,8 +10,8 @@ def index(request):
     return render(request, 'landing_page.html')
 
 def seznam_dokumentov(request):
-    seznam_testov = Test.objects.all()
-    return render(request, 'testi/seznam_dokumentov.html', {'seznam_testov': seznam_testov})
+    delovni_listi = Test.objects.all()
+    return render(request, 'testi/seznam_dokumentov.html', {'delovni_listi': delovni_listi})
 
 def podrobnosti_delovnega_lista(request, id_delovnega_lista: int):
     test: Test = get_object_or_404(Test, pk=id_delovnega_lista)
