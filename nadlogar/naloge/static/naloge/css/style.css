@@ -19,11 +19,17 @@
     font-weight: 700;
 }
 
+/* Prikaz naloge na strani */
 .naloga {
     padding: 2em;
     background-color: white;
     border: 1px solid #ced4da;
     border-radius: .25rem;
+}
+
+/* Seznam primerov v nalogi ima crke namesto pik */
+.naloga ul {
+    list-style-type: lower-alpha;
 }
 
 /* Posebno stiliranje ikon znotraj gumbov - centrira in doda razmik na desni
