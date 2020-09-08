@@ -6,6 +6,7 @@ import uuid
 
 from .models import Test, Naloga
 from .generatorji.latex_generator import LatexGenerator
+from .generatorji.html_generator import HtmlGenerator
 
 def index(request):
     return render(request, 'landing_page.html')
@@ -29,7 +30,22 @@ class NalogaForm(ModelForm):
         fields = ['generator', 'stevilo_primerov', 'navodila']
 
 def dodaj_nalogo(request, id_delovnega_lista: int):
-    return HttpResponse('ok')
+    delovni_list: Test = get_object_or_404(Test, pk=id_delovnega_lista)
+    
+    if request.method == 'POST':
+        naloga_form: NalogaForm = NalogaForm(request.POST)
+        if naloga_form.is_valid():
+            naloga = naloga_form.save(commit=False)
+            naloga.test = delovni_list
+            naloga.save()
+
+            try:
+                html = HtmlGenerator.generiraj_html(naloga.generator_nalog())
+                return HttpResponse(html)
+            except Exception:
+                return HttpResponse(status=400)
+    
+    return HttpResponse(status=400)
 
 def urejanje_delovnega_lista(request, id_delovnega_lista: int):
     test: Test = get_object_or_404(Test, pk=id_delovnega_lista)

@@ -105,28 +105,37 @@
         return nalogaDiv;
     }
 
-    $("#naloga-form").submit(function(event) {
-        event.preventDefault();
-         
-        var serializedData = $(this).serialize();
-        $.ajax({
-            type : 'POST',
-            url :  "{% url 'naloge:dodaj_nalogo' delovni_list.id %}",
-            data : serializedData,
-            success : function(response) {
-                // Ponastavi formo za dodajanje nalog in na strani prikazi HTML
-                // naloge, ki smo ga prejeli od streznika
-                let novaNaloga = ustvariNalogo(response);
-                document.getElementById("naloge").appendChild(novaNaloga);
+    $(document).ready(function() {
 
-                $("#naloga-form")[0].reset();
-            },
-            error : function(response) {
-                console.log(response)
-            }
+        $("#naloga-form").submit(function(event) {
+            event.preventDefault();
+            
+            var serializedData = $(this).serialize();
+            $.ajax({
+                type : 'POST',
+                url :  "{% url 'naloge:dodaj_nalogo' delovni_list.id %}",
+                data : serializedData,
+                success : function(response) {
+                    // Ustvari novo vsebnik z nalogo in ga dodaj na stran
+                    let novaNaloga = ustvariNalogo(response);
+                    document.getElementById("naloge").appendChild(novaNaloga);
+
+                    // Ponastavi obrazec za dodajanje naloge
+                    $("#naloga-form")[0].reset();
+
+                    // Zapri pojavno okno za dodajanje naloge
+                    $('#dodaj-nalogo-popup').modal('hide');
+
+                    // Scollaj do novo dodanega elementa
+                    novaNaloga.scrollIntoView({ behavior: 'smooth' });
+                },
+                error : function(response) {
+                    console.log(response)
+                }
+            });
         });
     });
-    
+
 </script>
 
 {% endblock %}
