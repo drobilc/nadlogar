@@ -25,6 +25,15 @@
     <div id="naloge" class="mb-3">
         {% for naloga in naloge %}
             <div class="naloga">
+
+                <form action="{% url 'naloge:odstrani_nalogo' delovni_list.id %}" method="post" class="odstrani-nalogo">
+                    {% csrf_token %}
+                    <input type="hidden" name="naloga_id" value="{{ naloga.id }}">
+                    <button type="submit" class="close" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </form>
+
                 <div class="primeri">
                     {{ naloga.generator_nalog | naloga_v_html }}
                 </div>
@@ -53,7 +62,7 @@
                 </button>
             </div>
 
-            <form action="" method="post" id="naloga-form">
+            <form action="{% url 'naloge:dodaj_nalogo' delovni_list.id %}" method="post" id="naloga-form">
                 {% csrf_token %}
                 <div class="modal-body">
 
@@ -105,15 +114,45 @@
         return nalogaDiv;
     }
 
+    function odstraniNalogo(event) {
+        
+    }
+
     $(document).ready(function() {
+
+        // Dodaj poslusalce ob kliku na krizec, ki izbrisejo nalogo
+        $(".odstrani-nalogo").submit(function(event) {
+            event.preventDefault();
+
+            let serializedData = $(this).serialize();
+            let url = $(this).attr('action');
+
+            // Odstranimo nalogo iz seznama nalog
+            $(this).parent().remove();
+
+            $.ajax({
+                type : 'POST',
+                url :  url,
+                data : serializedData,
+                success : function(response) {
+                    console.log(response);
+                },
+                error : function(response) {
+                    console.log(response)
+                }
+            });
+            
+        });
 
         $("#naloga-form").submit(function(event) {
             event.preventDefault();
             
             var serializedData = $(this).serialize();
+            let url = $(this).attr('action');
+
             $.ajax({
                 type : 'POST',
-                url :  "{% url 'naloge:dodaj_nalogo' delovni_list.id %}",
+                url :  url,
                 data : serializedData,
                 success : function(response) {
                     // Ustvari novo vsebnik z nalogo in ga dodaj na stran
