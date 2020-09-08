@@ -68,8 +68,8 @@ class Naloga(models.Model):
         # Ce navodila naloge niso podana, jih pred shranjevanjem preberemo iz
         # generatorja
         if self.navodila is None or len(self.navodila) <= 0:
-            generator = self.GENERATOR_DICT[self.generator]
-            self.navodila = generator.NAVODILA
+            generator_razred = Naloga.GENERATOR_DICT[self.generator]
+            self.navodila = generator_razred.NAVODILA
         
         # Pred shranjevanjem naloge v bazo podatkov, preverimo ali podatki
         # naloge se niso bili zgenerirani (t.j. v primeru, da ima self.podatki
