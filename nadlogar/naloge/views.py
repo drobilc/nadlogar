@@ -62,15 +62,31 @@ def odstrani_nalogo(request, id_delovnega_lista: int):
 
     return HttpResponse(status=400)
 
+class DelovniListForm(ModelForm):
+    class Meta:
+        model = Test
+        fields = ['naslov', 'opis']
+
 def urejanje_delovnega_lista(request, id_delovnega_lista: int):
     test: Test = get_object_or_404(Test, pk=id_delovnega_lista)
+
+    if request.method == 'POST':
+        delovni_list_form: DelovniListForm = DelovniListForm(request.POST)
+        if delovni_list_form.is_valid():
+            test.naslov = delovni_list_form.cleaned_data['naslov']
+            test.opis = delovni_list_form.cleaned_data['opis']
+            test.save()
+            return redirect(reverse('naloge:podrobnosti_delovnega_lista', kwargs={'id_delovnega_lista' : test.id }))
+    
+    delovni_list_form: DelovniListForm = DelovniListForm(instance=test)
     naloga_form: NalogaForm = NalogaForm(initial={
         'stevilo_primerov': 4
     })
     return render(request, 'testi/urejanje_dokumenta.html', {
         'delovni_list': test,
         'naloge': test.naloge.all(),
-        'naloga_form': naloga_form
+        'naloga_form': naloga_form,
+        'delovni_list_form': delovni_list_form
     })
 
 def generiraj_delovni_list(request, id_delovnega_lista: int):

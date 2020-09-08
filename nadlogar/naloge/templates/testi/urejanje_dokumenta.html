@@ -8,15 +8,26 @@
 <div class="container is-narrow">
 
     <div id="podatki-dokumenta">
-        <label for="naslov-dokumenta" class="special-label">Osnovni podatki delovnega lista</label>
+
+        <form action="" method="post">
+            {% csrf_token %}
+            <label for="naslov-dokumenta" class="special-label">Osnovni podatki delovnega lista</label>
         
-        <div class="form-group">
-            <input type="text" class="form-control title-input-field" id="naslov-dokumenta" name="naslov_dokumenta" value="{{ delovni_list.naslov }}">
-        </div>
-    
-        <div class="form-group">
-            <textarea name="opis_dokumenta" id="opis-dokumenta" rows="4" class="form-control">{{ delovni_list.opis }}</textarea>
-        </div>
+            <div class="form-group">
+                <input type="text" class="form-control title-input-field" id="naslov-dokumenta" name="{{ delovni_list_form.naslov.name }}" value="{{ delovni_list_form.naslov.value }}">
+            </div>
+        
+            <div class="form-group">
+                <textarea name="{{ delovni_list_form.opis.name }}" id="opis-dokumenta" rows="4" class="form-control">{{ delovni_list_form.opis.value }}</textarea>
+            </div>
+
+            <div class="text-center mb-5">
+                <button type="submit" class="btn btn-primary align-self-md-center">
+                    <span class="material-icons material-icons-button">save</span>
+                    Shrani podatke
+                </button>
+            </div>
+        </form>
 
     </div>
 

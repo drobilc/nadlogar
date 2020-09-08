@@ -18,22 +18,20 @@ GENERATORJI = [
 
 class Test(models.Model):
     naslov = models.CharField(max_length=255)
-    datum = models.DateField()
     opis = models.TextField(blank=True)
 
     class Meta:
-        ordering = ['datum', 'naslov']
+        ordering = ['naslov']
         verbose_name_plural = 'testi'
 
     def __str__(self):
-        return f'{self.naslov} ({self.datum})'
+        return f'{self.naslov}'
     
     @staticmethod
     def prazen_dokument():
         return Test(
             naslov=settings.PRAZEN_DOKUMENT['naslov'],
-            opis=settings.PRAZEN_DOKUMENT['opis'],
-            datum=django.utils.timezone.now().date()
+            opis=settings.PRAZEN_DOKUMENT['opis']
         )
 
 class Naloga(models.Model):
