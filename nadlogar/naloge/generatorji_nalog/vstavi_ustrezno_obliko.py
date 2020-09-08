@@ -41,6 +41,6 @@ class NalogaVstaviUstreznoObliko(GeneratorNalog):
         # print(zgled_besedilo.replace(iztocnica_zgleda, '______ ({})'.format(iztocnica)))
         try:
             pred, po = zgled_besedilo.split(iztocnica_zgleda)
-            return {'pred': pred, 'iztocnica': iztocnica, 'po': po, 'resitev': iztocnice_zgleda}
+            return {'pred': pred, 'iztocnica': iztocnica, 'po': po, 'resitev': iztocnica_zgleda}
         except Exception:
             return self.generiraj_primer()
