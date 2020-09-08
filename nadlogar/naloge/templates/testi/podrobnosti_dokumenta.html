@@ -2,13 +2,27 @@
 
 {% load naloga_v_html %}
 
-{% block naslov %}Delovni list - {{ test.naslov }}{% endblock %}
+{% block naslov %}Delovni list - {{ delovni_list.naslov }}{% endblock %}
 
 {% block vsebina %}
 <div class="container is-narrow">
 
-    <h2>{{ test.naslov }}</h2>
-    <p>{{ test.opis }}</p>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>{{ delovni_list.naslov }}</h2>
+        <div>
+            <a class="btn btn-sm btn-primary" href="{% url 'naloge:urejanje_delovnega_lista' delovni_list.id %}">
+                <i class="material-icons material-icons-button">create</i>
+                Uredi
+            </a>
+            <a class="btn btn-sm btn-primary" href="{% url 'naloge:generiraj_delovni_list' delovni_list.id %}">
+                <i class="material-icons material-icons-button">get_app</i>
+                Prenesi
+            </a>
+        </div>
+    </div>
+    
+    
+    <p>{{ delovni_list.opis }}</p>
 
     <div id="naloge" class="mb-5">
         {% for naloga in naloge %}

@@ -25,3 +25,13 @@
     border: 1px solid #ced4da;
     border-radius: .25rem;
 }
+
+/* Posebno stiliranje ikon znotraj gumbov - centrira in doda razmik na desni
+strani ikone (pred tekstom gumba) */
+.material-icons-button {
+    font-size: .875rem !important;
+    margin-right: 0.2em;
+    position: inherit;
+    vertical-align: middle;
+    margin-top: -4px;
+}
