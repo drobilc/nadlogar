@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404, render, redirect, reverse
+from django.forms import ModelForm
 from django.http import HttpResponse
 from django.conf import settings
 import uuid
@@ -22,9 +23,24 @@ def ustvari_delovni_list(request):
     nov_delovni_list.save()
     return redirect(reverse('naloge:urejanje_delovnega_lista', kwargs={'id_delovnega_lista' : nov_delovni_list.id }))
 
+class NalogaForm(ModelForm):
+    class Meta:
+        model = Naloga
+        fields = ['generator', 'stevilo_primerov', 'navodila']
+
+def dodaj_nalogo(request, id_delovnega_lista: int):
+    return HttpResponse('ok')
+
 def urejanje_delovnega_lista(request, id_delovnega_lista: int):
     test: Test = get_object_or_404(Test, pk=id_delovnega_lista)
-    return render(request, 'testi/urejanje_dokumenta.html', {'delovni_list': test, 'naloge': test.naloge.all()})
+    naloga_form: NalogaForm = NalogaForm(initial={
+        'stevilo_primerov': 4
+    })
+    return render(request, 'testi/urejanje_dokumenta.html', {
+        'delovni_list': test,
+        'naloge': test.naloge.all(),
+        'naloga_form': naloga_form
+    })
 
 def generiraj_delovni_list(request, id_delovnega_lista: int):
     test: Test = get_object_or_404(Test, pk=id_delovnega_lista)

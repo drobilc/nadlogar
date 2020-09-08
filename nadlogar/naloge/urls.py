@@ -25,4 +25,7 @@ urlpatterns = [
     # Generiranje pdf dokumenta iz delovnega lista
     path('dokument/<int:id_delovnega_lista>/pdf', views.generiraj_delovni_list, name='generiraj_delovni_list'),
 
+    # Dodajanje naloge na delovni list za Ajax zahteve
+    path('dokument/<int:id_delovnega_lista>/dodaj_nalogo', views.dodaj_nalogo, name='dodaj_nalogo'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

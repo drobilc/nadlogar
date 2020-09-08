@@ -22,18 +22,111 @@
 
     <label class="special-label mt-4">Naloge</label>
 
-    <div id="naloge" class="mb-5">
+    <div id="naloge" class="mb-3">
         {% for naloga in naloge %}
-            <div class="naloga mt-3">
+            <div class="naloga">
                 <div class="primeri">
                     {{ naloga.generator_nalog | naloga_v_html }}
                 </div>
             </div>
         {% endfor %}
-        <div id="dodaj-nalogo" class="text-center mt-4">
-            <button class="btn btn-primary align-self-md-center">Dodaj nalogo</button>
-        </div>
+    </div>
+
+    <div id="dodaj-nalogo" class="text-center mb-5">
+        <button class="btn btn-primary align-self-md-center" data-toggle="modal" data-target="#dodaj-nalogo-popup">
+            <span class="material-icons material-icons-button">add</span>
+            Dodaj nalogo
+        </button>
     </div>
 
 </div>
+
+<div class="modal fade" id="dodaj-nalogo-popup" tabindex="-1" role="dialog" aria-labelledby="dodaj-nalogo-naslov" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="dodaj-nalogo-naslov">Dodaj nalogo</h5>
+                
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form action="" method="post" id="naloga-form">
+                {% csrf_token %}
+                <div class="modal-body">
+
+                    <div class="row">
+
+                        <div class="col-8">
+                            <div class="form-group">
+                                <label for="vrsta-naloge">Vrsta naloge</label>
+                                <select class="form-control" id="vrsta-naloge" name="{{ naloga_form.generator.name }}">
+                                    {% for key, value in naloga_form.generator.field.choices %}
+                                        <option value="{{ key }}">{{ value }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label for="stevilo-primerov">Število primerov</label>
+                                <input type="number" class="form-control" id="stevilo-primerov" name="{{ naloga_form.stevilo_primerov.name }}" value="{{ naloga_form.stevilo_primerov.value }}">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="navodila">Navodila naloge</label>
+                        <textarea class="form-control" id="navodila" rows="3" aria-describedby="navodila-pomoc"  name="{{ naloga_form.navodila.name }}"></textarea>
+                        <small id="navodila-pomoc" class="form-text text-muted">Če pustite to polje prazno, bo za nalogo uporabljeno privzeto besedilo.</small>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-dismiss="modal">Prekliči</button>
+                    <button type="submit" class="btn btn-primary">Dodaj nalogo</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function ustvariNalogo(html) {
+        let nalogaDiv = document.createElement('div');
+        nalogaDiv.className = 'naloga';
+        nalogaDiv.innerHTML = html;
+        return nalogaDiv;
+    }
+
+    $("#naloga-form").submit(function(event) {
+        event.preventDefault();
+         
+        var serializedData = $(this).serialize();
+        $.ajax({
+            type : 'POST',
+            url :  "{% url 'naloge:dodaj_nalogo' delovni_list.id %}",
+            data : serializedData,
+            success : function(response) {
+                // Ponastavi formo za dodajanje nalog in na strani prikazi HTML
+                // naloge, ki smo ga prejeli od streznika
+                let novaNaloga = ustvariNalogo(response);
+                document.getElementById("naloge").appendChild(novaNaloga);
+
+                $("#naloga-form")[0].reset();
+            },
+            error : function(response) {
+                console.log(response)
+            }
+        });
+    });
+    
+</script>
+
 {% endblock %}
