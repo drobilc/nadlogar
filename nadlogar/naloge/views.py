@@ -1,27 +1,31 @@
 from django.shortcuts import get_object_or_404, render, redirect, reverse
+from django.contrib.auth.decorators import login_required
 from django.forms import ModelForm
 from django.http import HttpResponse
 from django.conf import settings
 import uuid
 import os
 
-from .models import Test, Naloga
+from .models import DelovniList, Naloga
 from .generatorji.latex_generator import LatexGenerator
 from .generatorji.html_generator import HtmlGenerator
 
 def index(request):
     return render(request, 'landing_page.html')
 
+@login_required
 def seznam_dokumentov(request):
-    delovni_listi = Test.objects.all()
+    delovni_listi = DelovniList.objects.filter(lastnik=request.user)
     return render(request, 'testi/seznam_dokumentov.html', {'delovni_listi': delovni_listi})
 
+@login_required
 def podrobnosti_delovnega_lista(request, id_delovnega_lista: int):
-    test: Test = get_object_or_404(Test, pk=id_delovnega_lista)
+    test: DelovniList = get_object_or_404(DelovniList, pk=id_delovnega_lista)
     return render(request, 'testi/podrobnosti_dokumenta.html', {'delovni_list': test, 'naloge': test.naloge.all()})
 
+@login_required
 def ustvari_delovni_list(request):
-    nov_delovni_list = Test.prazen_dokument()
+    nov_delovni_list = DelovniList.prazen_dokument(request.user)
     nov_delovni_list.save()
     return redirect(reverse('naloge:urejanje_delovnega_lista', kwargs={'id_delovnega_lista' : nov_delovni_list.id }))
 
@@ -30,14 +34,15 @@ class NalogaForm(ModelForm):
         model = Naloga
         fields = ['generator', 'stevilo_primerov', 'navodila']
 
+@login_required
 def dodaj_nalogo(request, id_delovnega_lista: int):
-    delovni_list: Test = get_object_or_404(Test, pk=id_delovnega_lista)
+    delovni_list: DelovniList = get_object_or_404(DelovniList, pk=id_delovnega_lista)
     
     if request.method == 'POST':
         naloga_form: NalogaForm = NalogaForm(request.POST)
         if naloga_form.is_valid():
             naloga = naloga_form.save(commit=False)
-            naloga.test = delovni_list
+            naloga.delovni_list = delovni_list
             naloga.save()
 
             try:
@@ -48,8 +53,9 @@ def dodaj_nalogo(request, id_delovnega_lista: int):
     
     return HttpResponse(status=400)
 
+@login_required
 def odstrani_nalogo(request, id_delovnega_lista: int):
-    delovni_list: Test = get_object_or_404(Test, pk=id_delovnega_lista)
+    delovni_list: DelovniList = get_object_or_404(DelovniList, pk=id_delovnega_lista)
 
     if request.method == 'POST':
         naloga_id = request.POST.get('naloga_id', None)
@@ -65,11 +71,12 @@ def odstrani_nalogo(request, id_delovnega_lista: int):
 
 class DelovniListForm(ModelForm):
     class Meta:
-        model = Test
+        model = DelovniList
         fields = ['naslov', 'opis']
 
+@login_required
 def urejanje_delovnega_lista(request, id_delovnega_lista: int):
-    test: Test = get_object_or_404(Test, pk=id_delovnega_lista)
+    test: DelovniList = get_object_or_404(DelovniList, pk=id_delovnega_lista)
 
     if request.method == 'POST':
         delovni_list_form: DelovniListForm = DelovniListForm(request.POST)
@@ -90,8 +97,9 @@ def urejanje_delovnega_lista(request, id_delovnega_lista: int):
         'delovni_list_form': delovni_list_form
     })
 
+@login_required
 def generiraj_delovni_list(request, id_delovnega_lista: int):
-    test: Test = get_object_or_404(Test, pk=id_delovnega_lista)
+    test: DelovniList = get_object_or_404(DelovniList, pk=id_delovnega_lista)
 
     random_name = uuid.uuid4()
 

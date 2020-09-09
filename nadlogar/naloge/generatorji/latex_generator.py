@@ -1,6 +1,6 @@
 from .visitor import Visitor
 from ..generatorji_nalog import *
-from ..models import Test
+from ..models import DelovniList
 
 from pylatex import Document, Command, Tabular, Center
 from pylatex.utils import italic, NoEscape
@@ -13,7 +13,7 @@ def remove_newlines(text):
 class LatexGenerator(Visitor):
     
     @staticmethod
-    def generate_latex(test: Test):
+    def generate_latex(test: DelovniList):
         latex_document = Document()
         latex_document.documentclass = Command('documentclass', 'izpit')
 
@@ -22,7 +22,7 @@ class LatexGenerator(Visitor):
             latex_document.append(element)
         return latex_document
 
-    def visit_test(self, test: Test, latex_document):
+    def visit_test(self, test: DelovniList, latex_document):
         ukaz_izpit = Command('izpit',
             arguments=[remove_newlines(test.naslov), '', remove_newlines(test.opis)],
             options=Options('brez vpisne', naloge=0)

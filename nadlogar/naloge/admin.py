@@ -1,11 +1,14 @@
 from django.contrib import admin
-from .models import Test, Naloga
+from django.contrib.auth.admin import UserAdmin
+from .models import Uporabnik, DelovniList, Naloga
 
-class TestAdmin(admin.ModelAdmin):
+class DelovniListAdmin(admin.ModelAdmin):
     pass
 
 class NalogaAdmin(admin.ModelAdmin):
     pass
 
-admin.site.register(Test, TestAdmin)
+admin.site.register(DelovniList, DelovniListAdmin)
 admin.site.register(Naloga, NalogaAdmin)
+
+admin.site.register(Uporabnik, UserAdmin)

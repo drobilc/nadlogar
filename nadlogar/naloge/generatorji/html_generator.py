@@ -1,6 +1,6 @@
 from .visitor import Visitor
 from ..generatorji_nalog import *
-from ..models import Test
+from ..models import DelovniList
 
 from lxml import etree
 from lxml.etree import tostring
