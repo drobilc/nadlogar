@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from lxml import etree
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -120,7 +121,17 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(os.path.join(BASE_DIR, 'media'))
 
+# Slovarji
+# Na pomnilnik preberemo celoten solski slovar, ki ga nato uporabljamo za
+# generiranje nalog
+SOLSKI_SLOVAR_DATOTEKA = os.path.join(os.path.join(BASE_DIR, 'slovarji'), 'solski_slovar.xml')
+with open(SOLSKI_SLOVAR_DATOTEKA, 'r', encoding='utf-8') as slovar:
+    SOLSKI_SLOVAR = etree.parse(slovar)
+
+# Podatki praznega dokumenta - ko uporabnik ustvari nov dokument se za naslov in
+# opis dokumenta uporabijo naslednji podatki
 PRAZEN_DOKUMENT = {
     'naslov': 'Neimenovan delovni list',
     'opis': 'Zaupajte vase in v svoje zmožnosti. Želimo vam veliko uspeha.'

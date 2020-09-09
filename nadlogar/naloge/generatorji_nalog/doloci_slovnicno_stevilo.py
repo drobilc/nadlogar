@@ -1,4 +1,5 @@
 from .generator_nalog import GeneratorNalog
+from django.conf import settings
 from lxml import etree
 import random
 
@@ -9,10 +10,7 @@ class NalogaDolociSlovnicnoStevilo(GeneratorNalog):
     
     def __init__(self, *args, **kwargs):
         super(NalogaDolociSlovnicnoStevilo, self).__init__(*args, **kwargs)
-
-        # Odpremo solski slovar in si v objekt shranimo koren xml drevesa DOC
-        with open('slovarji/solski_slovar.xml', 'r', encoding='utf-8') as slovar:
-            self.slovar = etree.parse(slovar)
+        self.slovar = settings.SOLSKI_SLOVAR
     
     def generiraj_primere(self, stevilo_primerov=6):
         gesla = self.slovar.xpath('//geslo[oblike/dvojina/following-sibling::množina]')
