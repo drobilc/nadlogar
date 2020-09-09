@@ -1,8 +1,0 @@
-<p class="uk-text-lead">{{ indeks }}. {{ naloga.navodila }}</p>
-<ul style="list-style-type: lower-alpha;">
-    {% for primer in naloga.generiraj %}
-        <li class="uk-margin">
-            {{ primer.pred }} <input class="uk-input uk-form-blank uk-form-width-small uk-form-small" type="text" placeholder=""> ({{ primer.iztocnica }}) {{ primer.po }}
-        </li>
-    {% endfor %}
-</ul>
