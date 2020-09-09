@@ -13,8 +13,23 @@
 
         <div class="navbar-collapse order-md-4 collapse" id="navbar">
             <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link" href="{% url 'naloge:ustvari_delovni_list' %}">Nov delovni list</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'naloge:seznam_dokumentov' %}">Moji delovni listi</a></li>
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'naloge:ustvari_delovni_list' %}">Nov delovni list</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'naloge:seznam_dokumentov' %}">Moji delovni listi</a></li>
+
+                    <li class="nav-item dropdown my-auto">
+                        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="material-icons material-icons-button">person</i>
+                            {{ request.user.username }}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="">Pomoč</a>
+                            <a class="dropdown-item" href="{% url 'logout' %}">Odjava</a>
+                        </div>
+                    </li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Prijava</a></li>
+                {% endif %}
             </ul>
         </div>
 

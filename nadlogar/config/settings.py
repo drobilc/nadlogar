@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'naloge',
+    'accounts.apps.AccountsConfig',
 ]
 
 MIDDLEWARE = [
@@ -138,3 +139,7 @@ PRAZEN_DOKUMENT = {
     'naslov': 'Neimenovan delovni list',
     'opis': 'Zaupajte vase in v svoje zmožnosti. Želimo vam veliko uspeha.'
 }
+
+# URL naslov za prijavo uporabnika
+LOGIN_URL = '/uporabnik/login'
+LOGIN_REDIRECT_URL = '/dokumenti'

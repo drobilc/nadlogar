@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block naslov %}Prijava{% endblock %}
+
+{% block vsebina %}
+
+<div class="container login-container">
+    
+    <h1 class="text-center">Prijava</h1>
+
+    <form class="login-form" method="post">
+        {% csrf_token %}
+
+        {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+                Neveljavno uporabniško ime ali geslo
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endif %}
+
+        <div class="form-group">
+            <label class="sr-only" for="username">Uporabniško ime</label>
+            <input class="form-control" id="username" name="username" type="text" placeholder="Uporabniško ime" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label class="sr-only" for="password">Geslo</label>
+            <input class="form-control" id="password" name="password" type="password" placeholder="Geslo" autocomplete="off">
+        </div>
+        <div class="form-group form-check">
+            <input class="form-check-input" id="accept_terms" type="checkbox" name="remember_me">
+            <label class="form-check-label" for="remember_me">Zapomni si me</label>
+        </div>
+        <button class="btn btn-primary align-self-md-center mt-3" name="submit" type="submit">Potrdite</button>
+    </form>
+    <div class="login-links-container">
+        <div class="login-link"><a href="/uporabnik/vpis">Še niste vpisani?</a></div>
+        <div class="login-link"><a href="/uporabnik/novogeslo">Ste pozabili geslo?</a></div>
+    </div>
+</div>
+{% endblock %}
