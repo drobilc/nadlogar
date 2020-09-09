@@ -7,7 +7,7 @@
 {% block vsebina %}
 <div class="container is-narrow">
 
-    <div id="podatki-dokumenta">
+    <div id="podatki-dokumenta" class="naloga">
 
         <form action="" method="post">
             {% csrf_token %}
@@ -40,13 +40,23 @@
         {% for naloga in naloge %}
             <div class="naloga">
 
-                <form action="{% url 'naloge:odstrani_nalogo' delovni_list.id %}" method="post" class="odstrani-nalogo">
-                    {% csrf_token %}
-                    <input type="hidden" name="naloga_id" value="{{ naloga.id }}">
-                    <button type="submit" class="close" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </form>
+                <div class="orodna-vrstica">
+
+                    <div class="gumb" data-toggle="tooltip" data-placement="left" title="Odstrani nalogo">
+                        <form action="{% url 'naloge:odstrani_nalogo' delovni_list.id %}" method="post" class="odstrani-nalogo">
+                            {% csrf_token %}
+                            <input type="hidden" name="naloga_id" value="{{ naloga.id }}">
+                            <button type="submit" aria-label="Close">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="gumb" data-toggle="tooltip" data-placement="left" title="Premakni gor"><span class="material-icons">keyboard_arrow_up</span></div>
+                    <div class="gumb" data-toggle="tooltip" data-placement="left" title="Premakni dol"><span class="material-icons">keyboard_arrow_down</span></div>
+                    <div class="gumb" data-toggle="tooltip" data-placement="left" title="Ustvari nove primere"><span class="material-icons">loop</span></div>
+                    <div class="gumb" data-toggle="tooltip" data-placement="left" title="Uredi nalogo"><span class="material-icons">edit</span></div>
+
+                </div>
 
                 <div class="primeri">
                     {{ naloga.generator_nalog | naloga_v_html }}
@@ -128,11 +138,9 @@
         return nalogaDiv;
     }
 
-    function odstraniNalogo(event) {
-        
-    }
-
     $(document).ready(function() {
+
+        $('.orodna-vrstica .gumb').tooltip();
 
         // Dodaj poslusalce ob kliku na krizec, ki izbrisejo nalogo
         $(".odstrani-nalogo").submit(function(event) {
@@ -141,8 +149,11 @@
             let serializedData = $(this).serialize();
             let url = $(this).attr('action');
 
+            // Skrijemo VSE tooltipe na strani
+            $('[data-toggle="tooltip"]').tooltip('hide');
+
             // Odstranimo nalogo iz seznama nalog
-            $(this).parent().remove();
+            $(this).closest('.naloga').remove();
 
             $.ajax({
                 type : 'POST',

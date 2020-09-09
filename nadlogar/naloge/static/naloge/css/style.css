@@ -19,13 +19,71 @@
     font-weight: 700;
 }
 
+/* Popravek pisave za tooltipe, saj je na Chrome bug, ki prikaze moten tekst */
+.tooltip {
+    font-family: Arial,sans-serif !important;
+}
+
 /* Prikaz naloge na strani */
 .naloga {
-    margin-top: 1rem;
+    margin-top: 2rem;
     padding: 2em;
     background-color: white;
-    border: 1px solid #ced4da;
-    border-radius: .25rem;
+    position: relative;
+}
+
+.naloga .orodna-vrstica {
+    position: absolute;
+    right: -30px; top: 50%;
+    margin-right: -16px;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 4px;
+    transform: translateY(-50%);
+}
+
+@media only screen and (max-width: 800px) {
+    .naloga .orodna-vrstica {
+        /* Ce je velikost ekrana pod 800px, naj se orodna vrstica prikaze NAD
+        nalogo in ne na desni strani */
+        right: 0; top: -30px;
+        margin-top: -16px;
+        margin-right: 0;
+        flex-direction: row;
+        padding: 4px 16px;
+        transform: none;
+    }
+
+    .naloga {
+        margin-top: 5rem;
+    }
+}
+
+.naloga .orodna-vrstica .gumb {
+    width: 30px; height: 30px;
+    line-height: 30px;
+    color: #2c3e50;
+    text-align: center;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.naloga .orodna-vrstica .gumb:hover {
+    background: #fcfcfc;
+    border-color: #95a5a6;
+}
+
+.naloga .orodna-vrstica .gumb .material-icons {
+    font-size: 1rem;
+}
+
+.naloga .orodna-vrstica .gumb button {
+    background: none;
 }
 
 /* Seznam primerov v nalogi ima crke namesto pik */
