@@ -7,6 +7,9 @@ from pylatex.utils import italic, NoEscape
 from pylatex.base_classes import Options
 from pylatex.basic import NewLine
 
+def remove_newlines(text):
+    return text.replace('\r\n', ' ').replace('\n', ' ')
+
 class LatexGenerator(Visitor):
     
     @staticmethod
@@ -21,7 +24,7 @@ class LatexGenerator(Visitor):
 
     def visit_test(self, test: Test, latex_document):
         ukaz_izpit = Command('izpit',
-            arguments=[test.naslov, '', test.opis],
+            arguments=[remove_newlines(test.naslov), '', remove_newlines(test.opis)],
             options=Options('brez vpisne', naloge=0)
         )
         latex_ukazi = [ukaz_izpit]
@@ -42,7 +45,7 @@ class LatexGenerator(Visitor):
         elif isinstance(naloga, NalogaGlasVsiljivec):
             return self.visit_glas_vsiljivec_naloga(naloga, latex_document)
         
-        return [Command('naloga', arguments=[naloga.navodila])]
+        return [Command('naloga', arguments=[remove_newlines(naloga.navodila)])]
     
     def visit_izloci_vsiljivca_naloga(self, naloga: NalogaIzlociVsiljivca, latex_document):
         primeri = []
@@ -52,7 +55,7 @@ class LatexGenerator(Visitor):
                 primeri.append(beseda)
                 primeri.append(Command('qquad'))
 
-        return [Command('naloga', arguments=[naloga.navodila])] + primeri[:-1]
+        return [Command('naloga', arguments=[remove_newlines(naloga.navodila)])] + primeri[:-1]
     
     def visit_vstavi_ustrezno_obliko_naloga(self, naloga: NalogaIzlociVsiljivca, latex_document):
         primeri = []
@@ -60,7 +63,7 @@ class LatexGenerator(Visitor):
             primeri.append(Command('podnaloga'))
             primeri.extend([primer['pred'], '________', ' ({}) '.format(primer['iztocnica']), primer['po']])
 
-        return [Command('naloga', arguments=[naloga.navodila])] + primeri
+        return [Command('naloga', arguments=[remove_newlines(naloga.navodila)])] + primeri
     
     def visit_doloci_slovnicno_stevilo_naloga(self, naloga: NalogaDolociSlovnicnoStevilo, latex_document):
 
@@ -82,7 +85,7 @@ class LatexGenerator(Visitor):
             primeri.append(center)
             primeri.append(Command('vspace', ['0.5cm']))
 
-        return [Command('naloga', arguments=[naloga.navodila])] + primeri
+        return [Command('naloga', arguments=[remove_newlines(naloga.navodila)])] + primeri
     
     def visit_stevilo_pomenov_naloga(self, naloga: NalogaDolociSteviloPomenov, latex_document):
         primeri = []
@@ -97,7 +100,7 @@ class LatexGenerator(Visitor):
                 primeri.append(Command('qquad'))
                 primeri.append(i)
 
-        return [Command('naloga', arguments=[naloga.navodila])] + primeri
+        return [Command('naloga', arguments=[remove_newlines(naloga.navodila)])] + primeri
     
     def visit_glas_vsiljivec_naloga(self, naloga: NalogaDolociSteviloPomenov, latex_document):
         
@@ -108,4 +111,4 @@ class LatexGenerator(Visitor):
                 tabela.add_row(primer['glasovi'])
             tabela.add_hline()
         
-        return [Command('naloga', arguments=[naloga.navodila])] + [center]
+        return [Command('naloga', arguments=[remove_newlines(naloga.navodila)])] + [center]
