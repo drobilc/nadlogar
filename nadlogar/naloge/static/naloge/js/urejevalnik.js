@@ -73,6 +73,8 @@ $(document).ready(function() {
                 if (action === 'ponovno_generiraj') {
                     // Popravimo vsebino naloge
                     naloga.find('.primeri').html(response);
+                } else if (action === 'dodaj_primer') {
+                    naloga.find('.primeri').html(response);
                 }
             },
             error : function(response) {

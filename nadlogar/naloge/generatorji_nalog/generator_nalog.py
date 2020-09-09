@@ -15,7 +15,11 @@ class GeneratorNalog(object):
         # prikazati in nato vrnemo slovar podatkov naloge
         novi_primeri = self.generiraj_primere(self.stevilo_primerov)
         return { 'primeri': novi_primeri }
-
+    
+    def dodaj_primer(self):
+        primeri = self.primeri()
+        primeri.append(self.generiraj_primere(1)[0])
+        return { 'primeri': primeri }
     
     def primeri(self):
         # Ce naloga se ni generirana, bo self.podatki zasedla vrednost None, v

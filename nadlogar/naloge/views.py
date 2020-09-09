@@ -83,6 +83,9 @@ def uredi_nalogo(request, id_delovnega_lista: int):
         elif action == 'ponovno_generiraj':
             naloga.ponovno_generiraj()
             return HttpResponse(HtmlGenerator.generiraj_html(naloga.generator_nalog()))
+        elif action == 'dodaj_primer':
+            naloga.dodaj_primer()
+            return HttpResponse(HtmlGenerator.generiraj_html(naloga.generator_nalog()))
         elif action == 'uredi_nalogo':
             pass
 

@@ -133,6 +133,12 @@ class Naloga(TimeStampMixin):
         self.podatki = None
         self.save()
     
+    def dodaj_primer(self):
+        generator_nalog = self.generator_nalog()
+        self.podatki = generator_nalog.dodaj_primer()
+        self.stevilo_primerov += 1
+        self.save()
+    
     def premakni_gor(self):
         prejsnje_naloge = self.delovni_list.naloge.filter(polozaj_v_dokumentu__lt=self.polozaj_v_dokumentu).order_by('-polozaj_v_dokumentu')
         # Ce je ta naloga prva na seznamu, potem ni kaj premikati
