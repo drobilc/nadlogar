@@ -34,7 +34,7 @@
 
 .naloga .orodna-vrstica {
     position: absolute;
-    right: -30px; top: 50%;
+    right: -30px; top: 0;
     margin-right: -16px;
     background-color: #ffffff;
     display: flex;
@@ -43,7 +43,6 @@
     display: flex;
     flex-direction: column;
     padding: 16px 4px;
-    transform: translateY(-50%);
 }
 
 @media only screen and (max-width: 800px) {
@@ -55,7 +54,6 @@
         margin-right: 0;
         flex-direction: row;
         padding: 4px 16px;
-        transform: none;
     }
 
     .naloga {
