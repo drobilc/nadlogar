@@ -82,6 +82,7 @@
 
 .naloga .orodna-vrstica .gumb button {
     background: none;
+    width: 100%;
 }
 
 /* Seznam primerov v nalogi ima crke namesto pik */

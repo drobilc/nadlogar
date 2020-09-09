@@ -54,18 +54,39 @@ def dodaj_nalogo(request, id_delovnega_lista: int):
     return HttpResponse(status=400)
 
 @login_required
-def odstrani_nalogo(request, id_delovnega_lista: int):
+def uredi_nalogo(request, id_delovnega_lista: int):
     delovni_list: DelovniList = get_object_or_404(DelovniList, pk=id_delovnega_lista)
 
     if request.method == 'POST':
+        
+        # Najprej pridobimo id naloge, ki jo zeli uporabnik urediti
         naloga_id = request.POST.get('naloga_id', None)
-        if naloga_id is not None:
-            try:
-                naloga = Naloga.objects.get(pk=naloga_id)
-                naloga.delete()
-                return HttpResponse(status=200)
-            except Exception:
-                return HttpResponse(status=400)
+        if naloga_id is None:
+            return HttpResponse(status=400)
+
+        # Nato preverimo ali naloga sploh obstaja v bazi podatkov        
+        try:
+            naloga = Naloga.objects.get(pk=naloga_id)
+        except Exception:
+            return HttpResponse(status=400)
+        
+        action = request.POST.get('action', None)
+        if action is None:
+            return HttpResponse(status=400)
+
+        if action == 'odstrani_nalogo':
+            naloga.delete()
+        elif action == 'premakni_gor':
+            naloga.premakni_gor()
+        elif action == 'premakni_dol':
+            naloga.premakni_dol()
+        elif action == 'ponovno_generiraj':
+            naloga.ponovno_generiraj()
+            return HttpResponse(HtmlGenerator.generiraj_html(naloga.generator_nalog()))
+        elif action == 'uredi_nalogo':
+            pass
+
+        return HttpResponse(status=200)
 
     return HttpResponse(status=400)
 

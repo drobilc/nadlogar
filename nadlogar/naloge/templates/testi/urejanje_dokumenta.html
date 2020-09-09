@@ -40,23 +40,33 @@
         {% for naloga in naloge %}
             <div class="naloga">
 
-                <div class="orodna-vrstica">
+                <form action="{% url 'naloge:uredi_nalogo' delovni_list.id %}" method="post" class="uredi-nalogo">
+                    {% csrf_token %}
+                    <input type="hidden" name="naloga_id" value="{{ naloga.id }}">
+                    <input type="hidden" name="action" value="">
+                    <div class="orodna-vrstica" id="orodna-vrstica">
+                        <!-- Akcijski gumbi -->
+                        <div class="gumb" data-toggle="tooltip" data-placement="left" title="Odstrani nalogo">
+                            <button type="submit" value="odstrani_nalogo"><span class="material-icons">delete</span></button>
+                        </div>
 
-                    <div class="gumb" data-toggle="tooltip" data-placement="left" title="Odstrani nalogo">
-                        <form action="{% url 'naloge:odstrani_nalogo' delovni_list.id %}" method="post" class="odstrani-nalogo">
-                            {% csrf_token %}
-                            <input type="hidden" name="naloga_id" value="{{ naloga.id }}">
-                            <button type="submit" aria-label="Close">
-                                <span class="material-icons">delete</span>
-                            </button>
-                        </form>
+                        <div class="gumb" data-toggle="tooltip" data-placement="left" title="Premakni gor">
+                            <button type="submit" value="premakni_gor"><span class="material-icons">keyboard_arrow_up</span></button>
+                        </div>
+
+                        <div class="gumb" data-toggle="tooltip" data-placement="left" title="Premakni dol">
+                            <button type="submit" value="premakni_dol"><span class="material-icons">keyboard_arrow_down</span></button>
+                        </div>
+
+                        <div class="gumb" data-toggle="tooltip" data-placement="left" title="Ustvari nove primere">
+                            <button type="submit" value="ponovno_generiraj"><span class="material-icons">loop</span></button>
+                        </div>
+
+                        <div class="gumb" data-toggle="tooltip" data-placement="left" title="Uredi nalogo">
+                            <button type="submit" value="uredi_nalogo"><span class="material-icons">edit</span></button>
+                        </div>
                     </div>
-                    <div class="gumb" data-toggle="tooltip" data-placement="left" title="Premakni gor"><span class="material-icons">keyboard_arrow_up</span></div>
-                    <div class="gumb" data-toggle="tooltip" data-placement="left" title="Premakni dol"><span class="material-icons">keyboard_arrow_down</span></div>
-                    <div class="gumb" data-toggle="tooltip" data-placement="left" title="Ustvari nove primere"><span class="material-icons">loop</span></div>
-                    <div class="gumb" data-toggle="tooltip" data-placement="left" title="Uredi nalogo"><span class="material-icons">edit</span></div>
-
-                </div>
+                </form>
 
                 <div class="primeri">
                     {{ naloga.generator_nalog | naloga_v_html }}
@@ -142,25 +152,63 @@
 
         $('.orodna-vrstica .gumb').tooltip();
 
+        $('#orodna-vrstica button').each(function() {
+            $(this).click(function(event) {
+                // Ce uporabnik klikne na enega izmed gumbov v orodni vrstici,
+                // najprej prekinemo posiljanje forme
+                event.preventDefault();
+                let forma = $(this).closest('form');
+
+                // Nato najdemo nevidno vnosno polje z imenom action in mu
+                // nastavimo vrednost na vrednost gumba
+                forma.find("input[name='action']").val($(this).val());
+
+                // Dejansko posljemo formo
+                forma.submit();
+            });
+        });
+
         // Dodaj poslusalce ob kliku na krizec, ki izbrisejo nalogo
-        $(".odstrani-nalogo").submit(function(event) {
+        $(".uredi-nalogo").submit(function(event) {
             event.preventDefault();
+
+            // Najdemo tip akcije, ki bi ga uporabnik rad izvedel
+            let action = $(this).find("input[name='action']").val();
 
             let serializedData = $(this).serialize();
             let url = $(this).attr('action');
 
-            // Skrijemo VSE tooltipe na strani
-            $('[data-toggle="tooltip"]').tooltip('hide');
+            let naloga = $(this).closest('.naloga');
 
-            // Odstranimo nalogo iz seznama nalog
-            $(this).closest('.naloga').remove();
+            if (action === 'odstrani_nalogo') {
+                // Skrijemo VSE tooltipe na strani
+                $('[data-toggle="tooltip"]').tooltip('hide');
+
+                // Odstranimo nalogo iz seznama nalog
+                naloga.remove();
+            } else if (action === 'premakni_gor') {
+                // Najdemo prejsnjo nalogo in ju zamenjamo
+                let prejsnjaNaloga = naloga.prev();
+                if (prejsnjaNaloga) {
+                    prejsnjaNaloga.before(naloga);
+                }
+            } else if (action === 'premakni_dol') {
+                // Najdemo naslednjo nalogo in ju zamenjamo
+                let naslednjaNaloga = naloga.next();
+                if (naslednjaNaloga) {
+                    naloga.before(naslednjaNaloga);
+                }
+            }
 
             $.ajax({
                 type : 'POST',
                 url :  url,
                 data : serializedData,
                 success : function(response) {
-                    console.log(response);
+                    if (action === 'ponovno_generiraj') {
+                        // Popravimo vsebino naloge
+                        naloga.find('.primeri').html(response);
+                    }
                 },
                 error : function(response) {
                     console.log(response)

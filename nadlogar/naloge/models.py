@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
 import django.utils.timezone
-from django.db.models import Max
+from django.db.models import Max, Min
 
 from naloge.generatorji_nalog import *
 
@@ -128,3 +128,35 @@ class Naloga(TimeStampMixin):
         #     naloge ta argument preprosto spregledajo in uporabnijo podatke iz
         #     slovarja podatki)
         return generator_razred(self.podatki, navodila=self.navodila, stevilo_primerov=self.stevilo_primerov)
+    
+    def ponovno_generiraj(self):
+        self.podatki = None
+        self.save()
+    
+    def premakni_gor(self):
+        prejsnje_naloge = self.delovni_list.naloge.filter(polozaj_v_dokumentu__lt=self.polozaj_v_dokumentu).order_by('-polozaj_v_dokumentu')
+        # Ce je ta naloga prva na seznamu, potem ni kaj premikati
+        if prejsnje_naloge.count() <= 0:
+            return
+        
+        prejsnja_naloga = prejsnje_naloge[0]
+        trenutni_polozaj = self.polozaj_v_dokumentu
+        self.polozaj_v_dokumentu = prejsnja_naloga.polozaj_v_dokumentu
+        prejsnja_naloga.polozaj_v_dokumentu = trenutni_polozaj
+
+        self.save()
+        prejsnja_naloga.save()
+
+    def premakni_dol(self):
+        naslednje_naloge = self.delovni_list.naloge.filter(polozaj_v_dokumentu__gt=self.polozaj_v_dokumentu).order_by('polozaj_v_dokumentu')
+        # Ce je ta naloga zadnja na seznamu, potem ni kaj premikati
+        if naslednje_naloge.count() <= 0:
+            return
+        
+        naslednja_naloga = naslednje_naloge[0]
+        trenutni_polozaj = self.polozaj_v_dokumentu
+        self.polozaj_v_dokumentu = naslednja_naloga.polozaj_v_dokumentu
+        naslednja_naloga.polozaj_v_dokumentu = trenutni_polozaj
+
+        self.save()
+        naslednja_naloga.save()
