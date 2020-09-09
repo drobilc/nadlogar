@@ -32,6 +32,14 @@ $(document).ready(function() {
         // Najdemo tip akcije, ki bi ga uporabnik rad izvedel
         let action = $(this).find("input[name='action']").val();
 
+        // Ce zeli uporabnik urediti nalogo, mu prikazemo pojavno okno, kjer
+        // lahko to stori.
+        if (action === 'uredi_nalogo') {
+            $('#uredi-nalogo-navodila').val($(this).find('input[name="naloga_navodila"]').val());
+            $('#uredi-nalogo-popup').modal('show');
+            return;
+        }
+
         let serializedData = $(this).serialize();
         let url = $(this).attr('action');
 
