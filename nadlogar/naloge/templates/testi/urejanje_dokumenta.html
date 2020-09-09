@@ -21,7 +21,10 @@
                 <textarea name="{{ delovni_list_form.opis.name }}" id="opis-dokumenta" rows="4" class="form-control">{{ delovni_list_form.opis.value }}</textarea>
             </div>
 
-            <div class="text-center mb-5">
+            <div class="text-right mb-5">
+                <a href="{% url 'naloge:podrobnosti_delovnega_lista' delovni_list.id %}" class="btn btn-light align-self-md-center">
+                    Prekliči
+                </a>
                 <button type="submit" class="btn btn-primary align-self-md-center">
                     <span class="material-icons material-icons-button">save</span>
                     Shrani podatke
