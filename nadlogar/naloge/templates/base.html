@@ -25,12 +25,15 @@
     {% block glava %}{% endblock %}
 
 </head>
-<body class="main-page-bg">
+<body class="{% block body_class %}main-page-bg{% endblock %}">
 
     {% include "navigation.html" %}
 
     <div class="content">
         {% block vsebina %}{% endblock %}
     </div>
+
+    {% include "footer.html" %}
+
 </body>
 </html>

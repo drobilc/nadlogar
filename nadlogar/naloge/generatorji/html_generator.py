@@ -11,6 +11,17 @@ def subelement_with_text(_parent, _tag, attrib={}, _text=None, nsmap=None, **_ex
     result.text = _text
     return result
 
+def ustvari_primer(_parent, _tag, attrib={}, _text=None, _classes=[], nsmap=None, **_extra):
+    result = etree.SubElement(_parent, _tag, attrib, nsmap, **_extra)
+
+    razredi = _classes + ['primer']
+    result.set('class', ' '.join(razredi))
+
+    odstrani_primer = etree.SubElement(result, 'div')
+    odstrani_primer.set('class', 'odstrani-primer')
+    
+    return result
+
 class HtmlGenerator(Visitor):
     
     @staticmethod
@@ -38,7 +49,7 @@ class HtmlGenerator(Visitor):
         
         seznam_primerov = etree.SubElement(html, 'ul')
         for primer in naloga.primeri():
-                primer_element = etree.SubElement(seznam_primerov, 'li')
+                primer_element = ustvari_primer(seznam_primerov, 'li')
                 primer_element.text = ', '.join(primer['besede'])
 
         return html
@@ -49,7 +60,7 @@ class HtmlGenerator(Visitor):
         
         seznam_primerov = etree.SubElement(html, 'ul')
         for primer in naloga.primeri():
-            primer_element = etree.SubElement(seznam_primerov, 'li')
+            primer_element = ustvari_primer(seznam_primerov, 'li')
             primer_tekst = '{} __________ ({}) {}'.format(primer['pred'], primer['iztocnica'], primer['po'])
             primer_element.text = primer_tekst
 
@@ -74,8 +85,7 @@ class HtmlGenerator(Visitor):
             etree.SubElement(ostale_vrstice, 'td')
             ostale_vrstice.set('style', 'height: 100px')
 
-            primer_element = etree.SubElement(seznam_primerov, 'li')
-            primer_element.set('class', 'mt-3')
+            primer_element = ustvari_primer(seznam_primerov, 'li', _classes=['mt-3'])
             primer_element.text = ', '.join(primer['besede'])
             primer_element.append(tabela)
 
@@ -87,7 +97,7 @@ class HtmlGenerator(Visitor):
 
         tabela = etree.SubElement(html, 'table')
         for primer in naloga.primeri():
-            vrstica = etree.SubElement(tabela, 'tr')
+            vrstica = ustvari_primer(tabela, 'tr')
             subelement_with_text(vrstica, 'td', _text=primer['beseda'])
 
             for i in range(1, 5):
@@ -104,7 +114,7 @@ class HtmlGenerator(Visitor):
         tabela = etree.SubElement(vsebnik, 'table')
         tabela.set('class', 'table table-bordered')
         for primer in naloga.primeri():
-            vrstica = etree.SubElement(tabela, 'tr')
+            vrstica = ustvari_primer(tabela, 'tr')
             for glas in primer['glasovi']:
                 subelement_with_text(vrstica, 'td', _text=glas)
 

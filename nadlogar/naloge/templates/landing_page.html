@@ -2,10 +2,55 @@
 
 {% block naslov %}Delovni listi{% endblock %}
 
-{% block vsebina %}
-<div class="container">
+{% load static %}
 
-    <h1>Generator delovnih listov</h1>
+{% block glava %}
+<style>
+    .branding-padding {
+        padding-left: 2em;
+        padding-right: 2em;
+    }
+    .branding-image {
+        width: 90%;
+    }
+    .branding > p.intro-text {
+        font-size: 0.9em;
+        letter-spacing: 2px;
+    }
+    .branding > p {
+        font-size: 1.4em;
+        font-weight: normal;
+    }
+    .branding > h1 {
+        font-weight: 700;
+    }
+</style>
+{% endblock %}
+
+{% block body_class %}{% endblock %}
+
+{% block vsebina %}
+<div class="container" style="background: #ffffff;">
+
+    <div class="row mb-5" style="min-height: 75vh;">
+        <div class="col-md-6 d-flex justify-content-center align-items-center order-1">
+            
+            <div class="branding branding-padding">
+                <p class="intro-text">ČUDOVITI DELOVNI LISTI</p>
+                <h1>Delovni listi iz slovenščine za vsakogar</h1>
+                <p class="lead mt-3 mb-4">V trenutku sestavite čudovite delovne liste iz slovenskega jezika.</p>
+                <div class="mt-5">
+                    <a href="{% url 'naloge:seznam_dokumentov' %}" class="btn btn-lg btn-orange">Ustvari delovni list!</a>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-6 mt-5 mt-md-0 d-flex justify-content-center align-items-center order-2 order-md-2-first">
+            <div class="branding-padding">
+                <img src="{% static '/naloge/images/branding_image.svg' %}" alt="" class="branding-image">
+            </div>
+        </div>
+    </div>
 
 </div>
 {% endblock %}

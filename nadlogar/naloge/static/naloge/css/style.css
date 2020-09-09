@@ -90,6 +90,10 @@
     list-style-type: lower-alpha;
 }
 
+.naloga .primer {
+    position: relative;
+}
+
 /* Posebno stiliranje ikon znotraj gumbov - centrira in doda razmik na desni
 strani ikone (pred tekstom gumba) */
 .material-icons-button {
@@ -98,4 +102,23 @@ strani ikone (pred tekstom gumba) */
     position: inherit;
     vertical-align: middle;
     margin-top: -4px;
+}
+
+.btn-orange {
+    background-color: #ff8300;
+    border-color: #f37e00;
+    color: #ffffff;
+}
+
+.btn-orange:hover {
+    color: #ffffff;
+    background-color: #ff9320;
+    border-color: #ff8300;
+}
+
+.btn-orange:focus {
+    color: #ffffff;
+    background-color: #ff8300;
+    border-color: #ff8300;
+    box-shadow: 0 0 0 0.2rem rgba(255, 131, 0, .5);
 }
