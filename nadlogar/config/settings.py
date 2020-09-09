@@ -121,7 +121,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(os.path.join(BASE_DIR, 'media'))
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Slovarji
 # Na pomnilnik preberemo celoten solski slovar, ki ga nato uporabljamo za

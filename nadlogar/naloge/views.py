@@ -3,6 +3,7 @@ from django.forms import ModelForm
 from django.http import HttpResponse
 from django.conf import settings
 import uuid
+import os
 
 from .models import Test, Naloga
 from .generatorji.latex_generator import LatexGenerator
@@ -95,6 +96,7 @@ def generiraj_delovni_list(request, id_delovnega_lista: int):
     random_name = uuid.uuid4()
 
     dokument = LatexGenerator.generate_latex(test)
-    dokument.generate_pdf(settings.MEDIA_ROOT + str(random_name), clean=True, clean_tex=True)
+    ime_datoteke = os.path.join(settings.MEDIA_ROOT, str(random_name))
+    dokument.generate_pdf(ime_datoteke, clean=True, clean_tex=True)
 
     return redirect(settings.MEDIA_URL + str(random_name) + '.pdf')
