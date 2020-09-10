@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'naloge',
     'accounts.apps.AccountsConfig',
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [

@@ -1,11 +1,21 @@
 {% extends "base.html" %}
 
+{% load humanize %}
+
 {% block naslov %}Moji delovni listi{% endblock %}
 
 {% block vsebina %}
 <div class="container is-narrow">
 
-    <h2>Moji delovni listi</h2>
+    <div class="d-flex justify-content-between align-items-center">
+        <h2>Moji delovni listi</h2>
+        <div>
+            <a class="btn btn-sm btn-primary" href="{% url 'naloge:ustvari_delovni_list' %}">
+                <i class="material-icons material-icons-button">create</i>
+                Ustvari
+            </a>
+        </div>
+    </div>
     <p>Spodaj si lahko ogledate delovne liste, ki ste jih ustvarili.</p>
 
     <ul class="list-group">
@@ -14,6 +24,7 @@
                 <div class="d-flex justify-content-between">
                     <div><strong>{{ delovni_list.naslov }}</strong></div>
                     <!-- Datum zadnje posodobitve delovnega lista -->
+                    <div class="text-muted">Posodobljeno {{ delovni_list.updated_at | naturaltime }}</div>
                 </div>
             </a>
         {% empty %}
