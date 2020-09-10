@@ -9,6 +9,18 @@ $(document).ready(function() {
 
     $('.orodna-vrstica .gumb').tooltip();
 
+    $('#vrsta-naloge').change(function(event) {
+        if (typeof NAVODILA === "undefined")
+            return;
+        
+        let selectedElement = $(this).val();
+        if (NAVODILA.hasOwnProperty(selectedElement)) {
+            $('#navodila').val(NAVODILA[selectedElement]);
+        } else {
+            $('#navodila').val('');
+        }
+    });
+
     $('#orodna-vrstica button').each(function() {
         $(this).click(function(event) {
             // Ce uporabnik klikne na enega izmed gumbov v orodni vrstici,

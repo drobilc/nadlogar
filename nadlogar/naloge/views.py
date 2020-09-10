@@ -100,25 +100,29 @@ class DelovniListForm(ModelForm):
 
 @login_required
 def urejanje_delovnega_lista(request, id_delovnega_lista: int):
-    test: DelovniList = get_object_or_404(DelovniList, pk=id_delovnega_lista)
+    delovni_list: DelovniList = get_object_or_404(DelovniList, pk=id_delovnega_lista)
 
     if request.method == 'POST':
         delovni_list_form: DelovniListForm = DelovniListForm(request.POST)
         if delovni_list_form.is_valid():
-            test.naslov = delovni_list_form.cleaned_data['naslov']
-            test.opis = delovni_list_form.cleaned_data['opis']
+            delovni_list.naslov = delovni_list_form.cleaned_data['naslov']
+            delovni_list.opis = delovni_list_form.cleaned_data['opis']
             test.save()
-            return redirect(reverse('naloge:podrobnosti_delovnega_lista', kwargs={'id_delovnega_lista' : test.id }))
+            return redirect(reverse('naloge:podrobnosti_delovnega_lista', kwargs={'id_delovnega_lista' : delovni_list.id }))
     
-    delovni_list_form: DelovniListForm = DelovniListForm(instance=test)
+    navodila = {}
+    for generator, generator_razred in Naloga.GENERATOR_DICT.items():
+        navodila[generator] = generator_razred.NAVODILA
+    
+    delovni_list_form: DelovniListForm = DelovniListForm(instance=delovni_list)
     naloga_form: NalogaForm = NalogaForm(initial={
         'stevilo_primerov': 4
     })
     return render(request, 'testi/urejanje_dokumenta.html', {
-        'delovni_list': test,
-        'naloge': test.naloge.all(),
+        'delovni_list': delovni_list,
         'naloga_form': naloga_form,
-        'delovni_list_form': delovni_list_form
+        'delovni_list_form': delovni_list_form,
+        'navodila': navodila
     })
 
 @login_required

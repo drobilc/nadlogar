@@ -43,7 +43,7 @@
     <label class="special-label mt-4">Naloge</label>
 
     <div id="naloge" class="mb-3">
-        {% for naloga in naloge %}
+        {% for naloga in delovni_list.naloge.all %}
             <div class="naloga">
 
                 <form action="{% url 'naloge:uredi_nalogo' delovni_list.id %}" method="post" class="uredi-nalogo">
@@ -155,6 +155,10 @@
 
                     <div class="row">
 
+                        <script>
+                            const NAVODILA = {{ navodila | safe }};
+                        </script>
+
                         <div class="col-8">
                             <div class="form-group">
                                 <label for="vrsta-naloge">Vrsta naloge</label>
@@ -177,8 +181,7 @@
 
                     <div class="form-group">
                         <label for="navodila">Navodila naloge</label>
-                        <textarea class="form-control" id="navodila" rows="3" aria-describedby="navodila-pomoc"  name="{{ naloga_form.navodila.name }}"></textarea>
-                        <small id="navodila-pomoc" class="form-text text-muted">Če pustite to polje prazno, bo za nalogo uporabljeno privzeto besedilo.</small>
+                        <textarea class="form-control" id="navodila" rows="3" name="{{ naloga_form.navodila.name }}"></textarea>
                     </div>
                 </div>
 
