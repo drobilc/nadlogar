@@ -2,6 +2,7 @@
 
 {% load naloga_v_html %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block naslov %}Urejanje {{ delovni_list.naslov }}{% endblock %}
 
@@ -79,6 +80,10 @@
                     {{ naloga.generator_nalog | naloga_v_html }}
                 </div>
 
+                <div class="uredi-nalogo-obrazec" style="display: none;">
+                    {{ naloga | naloga_urejanje_obrazec | crispy }}
+                </div>
+
                 <div class="text-center">
                     <form action="{% url 'naloge:uredi_nalogo' delovni_list.id %}" method="post" class="uredi-nalogo">
                         {% csrf_token %}
@@ -118,13 +123,7 @@
 
             <form action="{% url 'naloge:dodaj_nalogo' delovni_list.id %}" method="post">
                 {% csrf_token %}
-                <div class="modal-body">
-
-                    <div class="form-group">
-                        <label for="uredi-nalogo-navodila">Navodila naloge</label>
-                        <textarea class="form-control" id="uredi-nalogo-navodila" rows="3" aria-describedby="uredi-nalogo-navodila-pomoc" name="navodila"></textarea>
-                        <small id="uredi-nalogo-navodila-pomoc" class="form-text text-muted">Če pustite to polje prazno, bo za nalogo uporabljeno privzeto besedilo.</small>
-                    </div>
+                <div class="modal-body" id="uredi-nalogo-form">
 
                 </div>
 

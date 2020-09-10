@@ -32,18 +32,20 @@ $(document).ready(function() {
         // Najdemo tip akcije, ki bi ga uporabnik rad izvedel
         let action = $(this).find("input[name='action']").val();
 
+        let naloga = $(this).closest('.naloga');
+
         // Ce zeli uporabnik urediti nalogo, mu prikazemo pojavno okno, kjer
         // lahko to stori.
         if (action === 'uredi_nalogo') {
-            $('#uredi-nalogo-navodila').val($(this).find('input[name="naloga_navodila"]').val());
+            // Vsaka naloga vsebuje se obrazec za spreminjanje podatkov naloge.
+            // Obrazec kopiramo v formo znotraj pojavnega okna.
+            $('#uredi-nalogo-form').html(naloga.find('.uredi-nalogo-obrazec').html());
             $('#uredi-nalogo-popup').modal('show');
             return;
         }
 
         let serializedData = $(this).serialize();
         let url = $(this).attr('action');
-
-        let naloga = $(this).closest('.naloga');
 
         // Skrijemo VSE tooltipe na strani
         $('[data-toggle="tooltip"]').tooltip('hide');
