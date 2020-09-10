@@ -13,15 +13,12 @@
     .branding-image {
         width: 90%;
     }
-    .branding > p.intro-text {
-        font-size: 0.9em;
-        letter-spacing: 2px;
-    }
     .branding > p {
         font-size: 1.4em;
         font-weight: normal;
     }
-    .branding > h1 {
+    .branding > h1,
+    .branding > h2 {
         font-weight: 700;
     }
 </style>
@@ -36,9 +33,9 @@
         <div class="col-md-6 d-flex justify-content-center align-items-center order-1">
             
             <div class="branding branding-padding">
-                <p class="intro-text">ČUDOVITI DELOVNI LISTI</p>
+                <div style="width: 3rem; height: 0.4rem; background: #ff8300; opacity: 0.7; border-radius: 1rem; margin-bottom: 1rem;"></div>
                 <h1>Delovni listi iz slovenščine za vsakogar</h1>
-                <p class="lead mt-3 mb-4">V trenutku sestavite čudovite delovne liste iz slovenskega jezika.</p>
+                <p class="lead mt-3 mb-4">V trenutku sestavite čudovite delovne liste iz slovenskega jezika. Še ena poved, ki naj bo približno tako dolga, da bo kul.</p>
                 <div class="mt-5">
                     <a href="{% url 'naloge:seznam_dokumentov' %}" class="btn btn-lg btn-orange">Ustvari delovni list!</a>
                 </div>
@@ -49,6 +46,23 @@
             <div class="branding-padding">
                 <img src="{% static '/naloge/images/branding_image.svg' %}" alt="" class="branding-image">
             </div>
+        </div>
+    </div>
+
+    <div class="row" style="min-height: 60vh;">
+        <div class="col-md-6 mt-5 mt-md-0 d-flex justify-content-center align-items-center order-1 order-md-2-first">
+            <div class="branding-padding text-center" style="width: 100%;">
+                <img src="{% static '/naloge/images/dokument.svg' %}" alt="" class="branding-image" style="width: 80%;">
+            </div>
+        </div>
+        <div class="col-md-6 d-flex justify-content-center align-items-center order-2">
+            
+            <div class="branding branding-padding">
+                <div style="width: 2.5rem; height: 0.4rem; background: #ff8300; opacity: 0.7; border-radius: 1rem; margin-bottom: 1rem;"></div>
+                <h2>Dovolite nam, da vam poiščemo popolne primere!</h2>
+                <p class="lead mt-3 mb-4">Izberite vrsto nalog, ki jih želite na delovnem listu in naš algoritem vam bo sestavil primere prav za vas! Še malo dodatnega teksta, da izgleda kul.</p>
+            </div>
+
         </div>
     </div>
 
