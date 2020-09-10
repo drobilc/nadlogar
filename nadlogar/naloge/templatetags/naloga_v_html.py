@@ -17,4 +17,4 @@ def naloga_v_html(generator_nalog):
 
 @register.filter(name='naloga_urejanje_obrazec')
 def naloga_urejanje_obrazec(naloga):
-    return ObrazecGenerator.generiraj_obrazec(naloga.generator_nalog())
+    return ObrazecGenerator.generiraj_obrazec(naloga)

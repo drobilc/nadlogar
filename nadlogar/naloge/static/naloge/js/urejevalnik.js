@@ -1,3 +1,6 @@
+// Katero nalogo uporabnik trenutno ureja
+var trenutnaNaloga = null;
+
 function ustvariNalogo(html) {
     let nalogaDiv = document.createElement('div');
     nalogaDiv.className = 'naloga';
@@ -37,6 +40,24 @@ $(document).ready(function() {
         });
     });
 
+    $('#uredi-nalogo').submit(function(event) {
+        event.preventDefault();
+        let serializedData = $(this).serialize();
+        let url = $(this).attr('action');
+        $.ajax({
+            type : 'POST',
+            url :  url,
+            data : serializedData,
+            success : function(response) {
+                trenutnaNaloga.find('.primeri').html(response);
+                $('#uredi-nalogo-popup').modal('hide');
+            },
+            error : function(response) {
+                console.log(response)
+            }
+        });
+    });
+
     // Dodaj poslusalce ob kliku na krizec, ki izbrisejo nalogo
     $(".uredi-nalogo").submit(function(event) {
         event.preventDefault();
@@ -53,6 +74,7 @@ $(document).ready(function() {
             // Obrazec kopiramo v formo znotraj pojavnega okna.
             $('#uredi-nalogo-form').html(naloga.find('.uredi-nalogo-obrazec').html());
             $('#uredi-nalogo-popup').modal('show');
+            trenutnaNaloga = naloga;
             return;
         }
 

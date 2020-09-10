@@ -9,6 +9,7 @@ import os
 from .models import DelovniList, Naloga
 from .generatorji.latex_generator import LatexGenerator
 from .generatorji.html_generator import HtmlGenerator
+from .generatorji.obrazec_generator import ObrazecGenerator
 
 def index(request):
     return render(request, 'landing_page.html')
@@ -87,8 +88,11 @@ def uredi_nalogo(request, id_delovnega_lista: int):
             naloga.dodaj_primer()
             return HttpResponse(HtmlGenerator.generiraj_html(naloga.generator_nalog()))
         elif action == 'uredi_nalogo':
-            pass
-
+            obrazec = ObrazecGenerator.generiraj_obrazec(naloga, request)
+            if obrazec.is_valid():
+                naloga.posodobi_podatke(obrazec.cleaned_data)
+                return HttpResponse(HtmlGenerator.generiraj_html(naloga.generator_nalog()))
+            
         return HttpResponse(status=200)
 
     return HttpResponse(status=400)

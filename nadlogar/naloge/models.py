@@ -129,6 +129,17 @@ class Naloga(TimeStampMixin):
         #     slovarja podatki)
         return generator_razred(self.podatki, navodila=self.navodila, stevilo_primerov=self.stevilo_primerov)
     
+    def posodobi_podatke(self, podatki):
+        for kljuc, vrednost in podatki.items():
+            if hasattr(self, kljuc):
+                setattr(self, kljuc, vrednost)
+            else:
+                self.podatki[kljuc] = vrednost
+        
+        generator_nalog = self.generator_nalog()
+        self.podatki = generator_nalog.generiraj_nalogo()
+        self.save()
+    
     def ponovno_generiraj(self):
         self.podatki = None
         self.save()
