@@ -1,18 +1,10 @@
 // Katero nalogo uporabnik trenutno ureja
 var trenutnaNaloga = null;
 
-function ustvariNalogo(html) {
-    let nalogaDiv = document.createElement('div');
-    nalogaDiv.className = 'naloga';
-    nalogaDiv.innerHTML = html;
-    return nalogaDiv;
-}
+function nastaviPoslusalceObrazcev(stars) {
+    stars.find('.orodna-vrstica .gumb').tooltip();
 
-$(document).ready(function() {
-
-    $('.orodna-vrstica .gumb').tooltip();
-
-    $('#vrsta-naloge').change(function(event) {
+    stars.find('#vrsta-naloge').change(function(event) {
         if (typeof NAVODILA === "undefined")
             return;
         
@@ -24,7 +16,7 @@ $(document).ready(function() {
         }
     });
 
-    $('#orodna-vrstica button').each(function() {
+    stars.find('#orodna-vrstica button').each(function() {
         $(this).click(function(event) {
             // Ce uporabnik klikne na enega izmed gumbov v orodni vrstici,
             // najprej prekinemo posiljanje forme
@@ -40,7 +32,7 @@ $(document).ready(function() {
         });
     });
 
-    $('#uredi-nalogo').submit(function(event) {
+    stars.find('#uredi-nalogo').submit(function(event) {
         event.preventDefault();
         let serializedData = $(this).serialize();
         let url = $(this).attr('action');
@@ -49,7 +41,9 @@ $(document).ready(function() {
             url :  url,
             data : serializedData,
             success : function(response) {
-                trenutnaNaloga.find('.primeri').html(response);
+                let novaNaloga = $(response);
+                let zamenjan = trenutnaNaloga.replaceWith(novaNaloga);
+                nastaviPoslusalceObrazcev(novaNaloga);
                 $('#uredi-nalogo-popup').modal('hide');
             },
             error : function(response) {
@@ -59,7 +53,7 @@ $(document).ready(function() {
     });
 
     // Dodaj poslusalce ob kliku na krizec, ki izbrisejo nalogo
-    $(".uredi-nalogo").submit(function(event) {
+    stars.find(".uredi-nalogo").submit(function(event) {
         event.preventDefault();
 
         // Najdemo tip akcije, ki bi ga uporabnik rad izvedel
@@ -108,9 +102,13 @@ $(document).ready(function() {
             success : function(response) {
                 if (action === 'ponovno_generiraj') {
                     // Popravimo vsebino naloge
-                    naloga.find('.primeri').html(response);
+                    let novaNaloga = $(response);
+                    let zamenjan = naloga.replaceWith(novaNaloga);
+                    nastaviPoslusalceObrazcev(novaNaloga);
                 } else if (action === 'dodaj_primer') {
-                    naloga.find('.primeri').html(response);
+                    let novaNaloga = $(response);
+                    let zamenjan = naloga.replaceWith(novaNaloga);
+                    nastaviPoslusalceObrazcev(novaNaloga);
                 }
             },
             error : function(response) {
@@ -120,7 +118,7 @@ $(document).ready(function() {
         
     });
 
-    $("#naloga-form").submit(function(event) {
+    stars.find("#naloga-form").submit(function(event) {
         event.preventDefault();
         
         var serializedData = $(this).serialize();
@@ -132,8 +130,9 @@ $(document).ready(function() {
             data : serializedData,
             success : function(response) {
                 // Ustvari novo vsebnik z nalogo in ga dodaj na stran
-                let novaNaloga = ustvariNalogo(response);
-                document.getElementById("naloge").appendChild(novaNaloga);
+                let novaNaloga = $(response);
+                $('#naloge').append(novaNaloga);
+                nastaviPoslusalceObrazcev(novaNaloga);
 
                 // Ponastavi obrazec za dodajanje naloge
                 $("#naloga-form")[0].reset();
@@ -142,11 +141,15 @@ $(document).ready(function() {
                 $('#dodaj-nalogo-popup').modal('hide');
 
                 // Scollaj do novo dodanega elementa
-                novaNaloga.scrollIntoView({ behavior: 'smooth' });
+                novaNaloga[0].scrollIntoView({ behavior: 'smooth' });
             },
             error : function(response) {
                 console.log(response)
             }
         });
     });
+}
+
+$(document).ready(function() {
+    nastaviPoslusalceObrazcev($(document));
 });

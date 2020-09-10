@@ -1,0 +1,57 @@
+{% load naloga_v_html %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+<div class="naloga">
+
+    <form action="{% url 'naloge:uredi_nalogo' delovni_list.id %}" method="post" class="uredi-nalogo">
+        {% csrf_token %}
+        <input type="hidden" name="naloga_id" value="{{ naloga.id }}">
+        <input type="hidden" name="" value="{{ naloga.id }}">
+        <input type="hidden" name="naloga_navodila" value="{{ naloga.navodila }}">
+        <input type="hidden" name="action" value="">
+        <div class="orodna-vrstica" id="orodna-vrstica">
+            <!-- Akcijski gumbi -->
+            <div class="gumb" data-toggle="tooltip" data-placement="left" title="Odstrani nalogo">
+                <button type="submit" value="odstrani_nalogo"><span class="material-icons">delete</span></button>
+            </div>
+
+            <div class="gumb" data-toggle="tooltip" data-placement="left" title="Premakni gor">
+                <button type="submit" value="premakni_gor"><span class="material-icons">keyboard_arrow_up</span></button>
+            </div>
+
+            <div class="gumb" data-toggle="tooltip" data-placement="left" title="Premakni dol">
+                <button type="submit" value="premakni_dol"><span class="material-icons">keyboard_arrow_down</span></button>
+            </div>
+
+            <div class="gumb" data-toggle="tooltip" data-placement="left" title="Ustvari nove primere">
+                <button type="submit" value="ponovno_generiraj"><span class="material-icons">loop</span></button>
+            </div>
+
+            <div class="gumb" data-toggle="tooltip" data-placement="left" title="Uredi nalogo">
+                <button type="submit" value="uredi_nalogo"><span class="material-icons">edit</span></button>
+            </div>
+        </div>
+    </form>
+
+    <div class="primeri">
+        {{ naloga.generator_nalog | naloga_v_html }}
+    </div>
+
+    <div class="uredi-nalogo-obrazec" style="display: none;">
+        {{ naloga | naloga_urejanje_obrazec | crispy }}
+    </div>
+
+    <div class="text-center">
+        <form action="{% url 'naloge:uredi_nalogo' delovni_list.id %}" method="post" class="uredi-nalogo">
+            {% csrf_token %}
+            <input type="hidden" name="naloga_id" value="{{ naloga.id }}">
+            <input type="hidden" name="action" value="dodaj_primer">
+            <button type="submit" class="btn btn-light btn-sm">
+                <span class="material-icons material-icons-button">add</span>
+                Dodaj primer
+            </button>
+        </form>
+    </div>
+    
+</div>

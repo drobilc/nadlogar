@@ -8,7 +8,6 @@ import os
 
 from .models import DelovniList, Naloga
 from .generatorji.latex_generator import LatexGenerator
-from .generatorji.html_generator import HtmlGenerator
 from .generatorji.obrazec_generator import ObrazecGenerator
 
 def index(request):
@@ -47,9 +46,8 @@ def dodaj_nalogo(request, id_delovnega_lista: int):
             naloga.save()
 
             try:
-                html = HtmlGenerator.generiraj_html(naloga.generator_nalog())
-                return HttpResponse(html)
-            except Exception:
+                return render(request, 'naloge/naloga.html', { 'naloga': naloga, 'delovni_list': delovni_list })
+            except Exception as e:
                 return HttpResponse(status=400)
     
     return HttpResponse(status=400)
@@ -83,15 +81,15 @@ def uredi_nalogo(request, id_delovnega_lista: int):
             naloga.premakni_dol()
         elif action == 'ponovno_generiraj':
             naloga.ponovno_generiraj()
-            return HttpResponse(HtmlGenerator.generiraj_html(naloga.generator_nalog()))
+            return render(request, 'naloge/naloga.html', { 'naloga': naloga, 'delovni_list': delovni_list })
         elif action == 'dodaj_primer':
             naloga.dodaj_primer()
-            return HttpResponse(HtmlGenerator.generiraj_html(naloga.generator_nalog()))
+            return render(request, 'naloge/naloga.html', { 'naloga': naloga, 'delovni_list': delovni_list })
         elif action == 'uredi_nalogo':
             obrazec = ObrazecGenerator.generiraj_obrazec(naloga, request)
             if obrazec.is_valid():
                 naloga.posodobi_podatke(obrazec.cleaned_data)
-                return HttpResponse(HtmlGenerator.generiraj_html(naloga.generator_nalog()))
+                return render(request, 'naloge/naloga.html', { 'naloga': naloga, 'delovni_list': delovni_list })
             
         return HttpResponse(status=200)
 
@@ -111,7 +109,7 @@ def urejanje_delovnega_lista(request, id_delovnega_lista: int):
         if delovni_list_form.is_valid():
             delovni_list.naslov = delovni_list_form.cleaned_data['naslov']
             delovni_list.opis = delovni_list_form.cleaned_data['opis']
-            test.save()
+            delovni_list.save()
             return redirect(reverse('naloge:podrobnosti_delovnega_lista', kwargs={'id_delovnega_lista' : delovni_list.id }))
     
     navodila = {}
