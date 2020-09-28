@@ -21,7 +21,7 @@
     <ul class="list-group">
         {% for delovni_list in delovni_listi %}
             <a href="{% url 'naloge:podrobnosti_delovnega_lista' delovni_list.id %}" class="list-group-item list-group-item-action">
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between flex-column flex-sm-row">
                     <div><strong>{{ delovni_list.naslov }}</strong></div>
                     <!-- Datum zadnje posodobitve delovnega lista -->
                     <div class="text-muted">Posodobljeno {{ delovni_list.updated_at | naturaltime }}</div>
