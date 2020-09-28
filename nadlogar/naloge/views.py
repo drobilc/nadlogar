@@ -46,8 +46,14 @@ def seznam_dokumentov(request):
 
 @login_required
 def podrobnosti_delovnega_lista(request, id_delovnega_lista: int):
-    test: DelovniList = get_object_or_404(DelovniList, pk=id_delovnega_lista)
-    return render(request, 'testi/podrobnosti_dokumenta.html', {'delovni_list': test, 'naloge': test.naloge.all()})
+    # Najprej poiscemo delovni list glede na prejet id. Ce uporabnik nima
+    # pravice za ogled dokumenta vrnemo napako
+    delovni_list: DelovniList = get_object_or_404(DelovniList, pk=id_delovnega_lista)
+
+    if not delovni_list.lahko_vidi(request.user):
+        raise PermissionDenied
+
+    return render(request, 'testi/podrobnosti_dokumenta.html', {'delovni_list': delovni_list})
 
 @login_required
 def odstranjevanje_delovnega_lista(request, id_delovnega_lista: int):
@@ -86,19 +92,25 @@ class NalogaForm(ModelForm):
 
 @login_required
 def dodaj_nalogo(request, id_delovnega_lista: int):
+    # Edina dovoljena metoda za dodajanje naloge je POST
+    if request.method != 'POST':
+        return HttpResponse(status=400)
+    
+    # Najprej poiscemo delovni list glede na prejet id
     delovni_list: DelovniList = get_object_or_404(DelovniList, pk=id_delovnega_lista)
     
-    if request.method == 'POST':
-        naloga_form: NalogaForm = NalogaForm(request.POST)
-        if naloga_form.is_valid():
-            naloga = naloga_form.save(commit=False)
-            naloga.delovni_list = delovni_list
-            naloga.save()
-
-            try:
-                return render(request, 'naloge/naloga.html', { 'naloga': naloga, 'delovni_list': delovni_list })
-            except Exception as e:
-                return HttpResponse(status=400)
+    # Preverimo ali ima uporabnik urejevalni dostop do delovnega lista.
+    if not delovni_list.lahko_ureja(request.user):
+        raise PermissionDenied
+    
+    # Glede na prejete POST podatke zapolnimo Naloga form. Ce je ta veljavna, ji
+    # dodamo se delovni list in podatke shranimo.
+    naloga_form: NalogaForm = NalogaForm(request.POST)
+    if naloga_form.is_valid():
+        naloga = naloga_form.save(commit=False)
+        naloga.delovni_list = delovni_list
+        naloga.save()
+        return render(request, 'naloge/naloga.html', { 'naloga': naloga })
     
     return HttpResponse(status=400)
 
@@ -149,15 +161,15 @@ def uredi_nalogo(request):
         naloga.premakni_dol()
     elif action == 'ponovno_generiraj':
         naloga.ponovno_generiraj()
-        return render(request, 'naloge/naloga.html', { 'naloga': naloga, 'delovni_list': naloga.delovni_list })
+        return render(request, 'naloge/naloga.html', { 'naloga': naloga })
     elif action == 'dodaj_primer':
         naloga.dodaj_primer()
-        return render(request, 'naloge/naloga.html', { 'naloga': naloga, 'delovni_list': naloga.delovni_list })
+        return render(request, 'naloge/naloga.html', { 'naloga': naloga })
     elif action == 'uredi_nalogo':
         obrazec = ObrazecGenerator.generiraj_obrazec(naloga, request)
         if obrazec.is_valid():
             naloga.posodobi_podatke(obrazec.cleaned_data)
-            return render(request, 'naloge/naloga.html', { 'naloga': naloga, 'delovni_list': naloga.delovni_list })
+            return render(request, 'naloge/naloga.html', { 'naloga': naloga })
         
     return HttpResponse(status=200)
 
@@ -170,7 +182,15 @@ class DelovniListForm(ModelForm):
 def urejanje_delovnega_lista(request, id_delovnega_lista: int):
     delovni_list: DelovniList = get_object_or_404(DelovniList, pk=id_delovnega_lista)
 
+    if not delovni_list.lahko_ureja(request.user):
+        raise PermissionDenied
+
     if request.method == 'POST':
+        # Ce je uporabnik izpolnil formo za urejanje delovnega lista, posodobimo
+        # podatke delovnega lista. Pri tem pa moramo paziti, da ne klicemo
+        # neposredno delovni_list_form.save(), saj ima nas obrazec za urejanje
+        # delovnega lista le dve polji - naslov in opis, namesto vseh zahtevanih
+        # polj obrazca. Tako posodobimo le ustrezna polja v bazi.
         delovni_list_form: DelovniListForm = DelovniListForm(request.POST)
         if delovni_list_form.is_valid():
             delovni_list.naslov = delovni_list_form.cleaned_data['naslov']
@@ -178,14 +198,15 @@ def urejanje_delovnega_lista(request, id_delovnega_lista: int):
             delovni_list.save()
             return redirect(reverse('naloge:podrobnosti_delovnega_lista', kwargs={'id_delovnega_lista' : delovni_list.id }))
     
+    # Ker zelimo uporabniku ob izbiri tipa naloge v spustnem seznamu ob
+    # dodajanju naloge ponuditi privzeta navodila, sestavimo JSON objekt z
+    # navodili vseh nalog, ki jih v dokumentu prikazemo z uporabo JavaScript.
     navodila = {}
     for generator, generator_razred in Naloga.GENERATOR_DICT.items():
         navodila[generator] = generator_razred.NAVODILA
     
     delovni_list_form: DelovniListForm = DelovniListForm(instance=delovni_list)
-    naloga_form: NalogaForm = NalogaForm(initial={
-        'stevilo_primerov': 4
-    })
+    naloga_form: NalogaForm = NalogaForm(initial={ 'stevilo_primerov': 4 })
     return render(request, 'testi/urejanje_dokumenta.html', {
         'delovni_list': delovni_list,
         'naloga_form': naloga_form,
@@ -195,12 +216,22 @@ def urejanje_delovnega_lista(request, id_delovnega_lista: int):
 
 @login_required
 def generiraj_delovni_list(request, id_delovnega_lista: int):
-    test: DelovniList = get_object_or_404(DelovniList, pk=id_delovnega_lista)
+    delovni_list: DelovniList = get_object_or_404(DelovniList, pk=id_delovnega_lista)
 
+    if not delovni_list.lahko_vidi(request.user):
+        raise PermissionDenied
+
+    # Pri generiranju pdf dokumenta najprej ustvarimo "unikatno" (uuid4 sicer v
+    # teoriji ni ravno unikaten, v praksi pa naceloma je) ime. To uporabimo za
+    # shranjevanje pdf dokumentov na disk.
     random_name = uuid.uuid4()
 
-    dokument = LatexGenerator.generate_latex(test)
+    # Sestavimo pot do datoteke na disku kamor bomo shranili pdf dokument.
     ime_datoteke = os.path.join(settings.MEDIA_ROOT, str(random_name))
+
+    # S pomocjo LaTeX generatorja zgeneriramo delovni list in ga shranimo
+    dokument = LatexGenerator.generate_latex(delovni_list)
     dokument.generate_pdf(ime_datoteke, clean=True, clean_tex=True)
 
+    # Uporabnika preusmerimo na URL za dostop do pdf dokumenta
     return redirect(settings.MEDIA_URL + str(random_name) + '.pdf')

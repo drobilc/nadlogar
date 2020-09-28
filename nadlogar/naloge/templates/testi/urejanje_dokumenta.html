@@ -43,7 +43,7 @@
 
     <div id="naloge" class="mb-3">
         {% for naloga in delovni_list.naloge.all %}
-            {% include 'naloge/naloga.html' with naloga=naloga delovni_list=delovni_list %}
+            {% include 'naloge/naloga.html' with naloga=naloga %}
         {% endfor %}
     </div>
 

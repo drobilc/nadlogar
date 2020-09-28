@@ -32,7 +32,7 @@
     
 
     <div id="naloge" class="mb-5">
-        {% for naloga in naloge %}
+        {% for naloga in delovni_list.naloge.all %}
             <div class="naloga mt-3">
                 {{ naloga | naloga_v_html }}
             </div>
