@@ -1,39 +1,30 @@
-from .generator_nalog import GeneratorNalog
-from django.conf import settings
+from .generator_nalog import GeneratorNalogSolskiSlovar
 from lxml import etree
 import random
 
-class NalogaGlasVsiljivec(GeneratorNalog):
+class NalogaGlasVsiljivec(GeneratorNalogSolskiSlovar):
 
     IME = 'Izloči vsiljivca - glas'
     NAVODILA = 'Kateri glas v vrstici je vsiljivec? Obkroži samoglasnik ali soglasnik.'
-
-    PRIVZETA_BESEDA = 'glasovi'
     
-    def __init__(self, *args, **kwargs):
-        super(NalogaGlasVsiljivec, self).__init__(*args, **kwargs)
-
-        self.beseda = NalogaGlasVsiljivec.PRIVZETA_BESEDA
-        if self.podatki is not None and 'beseda' in self.podatki:
-            self.beseda = self.podatki['beseda']
-        
-        self.slovar = settings.SOLSKI_SLOVAR
+    def privzeti_podatki(self):
+        return { 'beseda': 'glasovi' }
     
     def generiraj_nalogo(self):
-        novi_primeri = self.generiraj_primere(self.beseda)
-        return { 'primeri': novi_primeri, 'beseda': self.beseda }
+        self.podatki['primeri'] = self.generiraj_primere(self.podatki['beseda'])
+        return self.podatki
     
-    def generiraj_primere(self, beseda):        
+    def generiraj_primere(self, beseda):
         return [self.generiraj_primer(glas) for glas in beseda]
     
     def generiraj_primer(self, glas):
-        samoglasniki, soglasniki = [c for c in 'aeiou'], [c for c in 'bcčdfghjklmnprsštvzž']
+        samoglasniki, soglasniki = 'aeiou', 'bcčdfghjklmnprsštvzž'
         glasovi = [glas]
-        if glas in samoglasniki:
+        if glas.lower() in samoglasniki:
             glasovi.extend(random.sample(soglasniki, k=4))
         else:
             glasovi.extend(random.sample(samoglasniki, k=4))
         
         random.shuffle(glasovi)
 
-        return {'glasovi': glasovi}
+        return { 'glasovi': glasovi }

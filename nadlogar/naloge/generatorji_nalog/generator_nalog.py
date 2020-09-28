@@ -1,39 +1,76 @@
+from django.conf import settings
+
 class GeneratorNalog(object):
 
-    def __init__(self, podatki, navodila=None, stevilo_primerov=6):
-        self.podatki = podatki
-        self.navodila = navodila
-        self.stevilo_primerov = stevilo_primerov
+    def __init__(self, naloga):
+        # Vsak generator nalog vzdrzuje referenco na objekt v bazi podatkov in
+        # slovar 'podatki', v katerem je shranjen seznam primerov in nastavitev
+        # generatorja nalog.
+        self.naloga = naloga
+
+        # Za podatke vedno vzamemo slovar privzetih podatkov, ki mu nato dodamo
+        # dodatne podatke, ki so morebiti ze shranjeni v bazi podatkov
+        self.podatki = self.privzeti_podatki()
+        if self.naloga.podatki is not None:
+            self.podatki.update(self.naloga.podatki)
     
-    def generiraj_nalogo(self):
-        """Funkcija generiraj_nalogo se klice kadar je v bazi podatkov
-        ustvarjena nova naloga ali kadar je potrebno nalogo ponovno ustvariti.
-        Pri klicu ustvarimo slovar "podatki", ki se nato kot JSON shrani v bazo
-        podatkov in se uporablja za obnovitev seznama primerov naloge."""
-        # Sestavimo seznam novih primerov. Vsak primer je slovar, ki vsebuje
-        # poljubne podatke s pomocjo katerih ga znata Latex in HTML generator
-        # prikazati in nato vrnemo slovar podatkov naloge
-        novi_primeri = self.generiraj_primere(self.stevilo_primerov)
-        return { 'primeri': novi_primeri }
+    def shrani(self):
+        """Shrani spremenjene podatke v bazo podatkov"""
+        self.naloga.podatki = self.podatki
+        self.naloga.save()
     
-    def dodaj_primer(self):
-        primeri = self.primeri()
-        primeri.append(self.generiraj_primere(1)[0])
-        return { 'primeri': primeri }
+    def privzeti_podatki(self):
+        """Vrni slovar privzetih podatkov, ki se uporabijo, ce model Naloga v
+        bazi podatkov se nima slovarja podatkov
+        """
+        return {}
+    
+    def podatki(self):
+        """Vrni slovar podatkov naloge za shranjevanje v bazo podatkov"""
+        return self.podatki
+    
+    def posodobi_podatke(self, novi_podatki):
+        """Posodobi trenutne podatke generatorja in jih vrni"""   
+        self.podatki.update(novi_podatki)
+        return self.podatki
     
     def primeri(self):
-        # Ce naloga se ni generirana, bo self.podatki zasedla vrednost None, v
-        # tem primeru zgeneriramo seznam primerov in ga vrnemo
-        if self.podatki is None:
-            self.podatki = self.generiraj_nalogo()
-        
+        """Vrni seznam generiranih primerov naloge"""
+        if 'primeri' not in self.podatki:
+            self.generiraj_nalogo()
+        return self.podatki['primeri'] 
+    
+    def generiraj_nalogo(self):
+        """Ustvari seznam novih primerov naloge in jih vrni"""
+        self.podatki['primeri'] = self.generiraj_primere(self.naloga.stevilo_primerov)
+        return self.podatki
+    
+    def generiraj_primere(self, stevilo_primerov=6):
+        """Ustvari seznam primerov in ga vrni"""
+        novi_primeri = []
+        while len(novi_primeri) < stevilo_primerov:
+            novi_primeri.append(self.generiraj_primer())
+        return novi_primeri
+
+    def generiraj_primer(self):
+        """Ustvari nov primer in vrni slovar tega primera"""
+        return {}
+    
+    def accept(self, visitor, argument=None):
+        """Sprejmi obiskovalca (Visitor pattern)"""
+        return visitor.visit(self, argument)
+    
+    def dodaj_primer(self):
+        """Dodaj nov primer na seznam primerov in vrni slovar podatkov"""
+        novi_primeri = self.generiraj_primere(self.naloga.stevilo_primerov)
+        self.podatki['primeri'].append(novi_primeri[0])
         return self.podatki['primeri']
 
-    def generiraj_primere(self, stevilo_primerov=6):
-        return [self.generiraj_primer() for i in range(stevilo_primerov)]
-    
-    def generiraj_primer(self):
-        return {}
+class GeneratorNalogSolskiSlovar(GeneratorNalog):
+    """Posebna razlicica razreda GeneratorNalog, ki ima v spremenljivki slovar
+    shranjen solski slovar
+    """
 
-    def accept(self, visitor, argument=None):
-        return visitor.visit(self, argument)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.slovar = settings.SOLSKI_SLOVAR

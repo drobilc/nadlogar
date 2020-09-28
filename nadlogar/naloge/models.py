@@ -118,37 +118,48 @@ class Naloga(TimeStampMixin):
         return f'{self.delovni_list}: {self.get_generator_display()}, stevilo_primerov: {self.stevilo_primerov}'
     
     def generator_nalog(self):
-        # Glede na ime razreda generatorja poiscemo dejanski razred
         generator_razred = Naloga.GENERATOR_DICT[self.generator]
-        # Ustvarimo nov objekt, ki pripada razredu, kot argumente mu podamo:
-        #   * podatki - slovar s podatki s pomocjo katerega se zna objekt naloga
-        #     nazaj sestaviti (obnoviti seznam primerov)
-        #   * navodila - navodila naloge
-        #   * stevilo_primerov - koliko primerov zelimo zgenerirati (nekatere
-        #     naloge ta argument preprosto spregledajo in uporabnijo podatke iz
-        #     slovarja podatki)
-        return generator_razred(self.podatki, navodila=self.navodila, stevilo_primerov=self.stevilo_primerov)
+        return generator_razred(self)
+    
+    def primeri(self):
+        return self.generator_nalog().primeri()
     
     def posodobi_podatke(self, podatki):
-        for kljuc, vrednost in podatki.items():
-            if hasattr(self, kljuc):
-                setattr(self, kljuc, vrednost)
-            else:
-                self.podatki[kljuc] = vrednost
+        # Seznam polj, ki jih je dovoljeno spremeniti 
+        posodobi_polja = ['navodila', 'stevilo_primerov']
+
+        # Spremenimo seznam dovoljenih polj
+        for polje in posodobi_polja:
+            if polje in podatki:
+                setattr(self, polje, podatki[polje])
+                # Odstrani polje iz seznama podatkov, da jih ne shranjujemo v
+                # slovar podatkov naloge po nepotrebnem
+                del podatki[polje]
         
+        # Katerih polj ne shranjujemo v slovar podatkov naloge
+        nedovoljena_polja = ['naloga_id', 'action']
+        for polje in nedovoljena_polja:
+            if polje in podatki:
+                del podatki[polje]
+        
+        # Ko so podatki v modelu naloga spremenjeni, zahtevaj od generatorja
+        # nalog posodobitev podatkov, nato znova generiraj nalogo in podatke
+        # shrani v bazo podatkov
         generator_nalog = self.generator_nalog()
-        self.podatki = generator_nalog.generiraj_nalogo()
-        self.save()
+        generator_nalog.posodobi_podatke(podatki)
+        generator_nalog.generiraj_nalogo()
+        generator_nalog.shrani()
     
     def ponovno_generiraj(self):
-        self.podatki = None
-        self.save()
+        generator_nalog = self.generator_nalog()
+        generator_nalog.generiraj_nalogo()
+        generator_nalog.shrani()
     
     def dodaj_primer(self):
-        generator_nalog = self.generator_nalog()
-        self.podatki = generator_nalog.dodaj_primer()
         self.stevilo_primerov += 1
-        self.save()
+        generator_nalog = self.generator_nalog()
+        generator_nalog.dodaj_primer()
+        generator_nalog.shrani()
     
     def premakni_gor(self):
         prejsnje_naloge = self.delovni_list.naloge.filter(polozaj_v_dokumentu__lt=self.polozaj_v_dokumentu).order_by('-polozaj_v_dokumentu')

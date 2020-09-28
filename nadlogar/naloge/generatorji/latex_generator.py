@@ -45,7 +45,7 @@ class LatexGenerator(Visitor):
         elif isinstance(naloga, NalogaGlasVsiljivec):
             return self.visit_glas_vsiljivec_naloga(naloga, latex_document)
         
-        return [Command('naloga', arguments=[remove_newlines(naloga.navodila)])]
+        return [Command('naloga', arguments=[remove_newlines(naloga.naloga.navodila)])]
     
     def visit_izloci_vsiljivca_naloga(self, naloga: NalogaIzlociVsiljivca, latex_document):
         primeri = []
@@ -55,7 +55,7 @@ class LatexGenerator(Visitor):
                 primeri.append(beseda)
                 primeri.append(Command('qquad'))
 
-        return [Command('naloga', arguments=[remove_newlines(naloga.navodila)])] + primeri[:-1]
+        return [Command('naloga', arguments=[remove_newlines(naloga.naloga.navodila)])] + primeri[:-1]
     
     def visit_vstavi_ustrezno_obliko_naloga(self, naloga: NalogaIzlociVsiljivca, latex_document):
         primeri = []
@@ -63,7 +63,7 @@ class LatexGenerator(Visitor):
             primeri.append(Command('podnaloga'))
             primeri.extend([primer['pred'], '________', ' ({}) '.format(primer['iztocnica']), primer['po']])
 
-        return [Command('naloga', arguments=[remove_newlines(naloga.navodila)])] + primeri
+        return [Command('naloga', arguments=[remove_newlines(naloga.naloga.navodila)])] + primeri
     
     def visit_doloci_slovnicno_stevilo_naloga(self, naloga: NalogaDolociSlovnicnoStevilo, latex_document):
 
@@ -85,7 +85,7 @@ class LatexGenerator(Visitor):
             primeri.append(center)
             primeri.append(Command('vspace', ['0.5cm']))
 
-        return [Command('naloga', arguments=[remove_newlines(naloga.navodila)])] + primeri
+        return [Command('naloga', arguments=[remove_newlines(naloga.naloga.navodila)])] + primeri
     
     def visit_stevilo_pomenov_naloga(self, naloga: NalogaDolociSteviloPomenov, latex_document):
         primeri = []
@@ -100,7 +100,7 @@ class LatexGenerator(Visitor):
                 primeri.append(Command('qquad'))
                 primeri.append(i)
 
-        return [Command('naloga', arguments=[remove_newlines(naloga.navodila)])] + primeri
+        return [Command('naloga', arguments=[remove_newlines(naloga.naloga.navodila)])] + primeri
     
     def visit_glas_vsiljivec_naloga(self, naloga: NalogaDolociSteviloPomenov, latex_document):
         
@@ -111,4 +111,4 @@ class LatexGenerator(Visitor):
                 tabela.add_row(primer['glasovi'])
             tabela.add_hline()
         
-        return [Command('naloga', arguments=[remove_newlines(naloga.navodila)])] + [center]
+        return [Command('naloga', arguments=[remove_newlines(naloga.naloga.navodila)])] + [center]

@@ -6,9 +6,9 @@ from ..generatorji.obrazec_generator import ObrazecGenerator
 register = template.Library()
 
 @register.filter(name='naloga_v_html', is_safe=True)
-def naloga_v_html(generator_nalog):
+def naloga_v_html(naloga):
     try:
-        html = HtmlGenerator.generiraj_html(generator_nalog)
+        html = HtmlGenerator.generiraj_html(naloga)
         if html is None:
             return mark_safe('<p>HTML generator ne zna zgenerirati naloge.</p>')
         return mark_safe(html.decode('utf-8'))

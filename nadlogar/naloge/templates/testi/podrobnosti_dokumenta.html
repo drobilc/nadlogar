@@ -30,9 +30,7 @@
     <div id="naloge" class="mb-5">
         {% for naloga in naloge %}
             <div class="naloga mt-3">
-                <div class="primeri">
-                    {{ naloga.generator_nalog | naloga_v_html }}
-                </div>
+                {{ naloga | naloga_v_html }}
             </div>
         {% endfor %}
     </div>

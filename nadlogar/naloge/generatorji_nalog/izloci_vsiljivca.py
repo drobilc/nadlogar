@@ -1,16 +1,11 @@
-from .generator_nalog import GeneratorNalog
-from django.conf import settings
+from .generator_nalog import GeneratorNalogSolskiSlovar
 from lxml import etree
 import random
 
-class NalogaIzlociVsiljivca(GeneratorNalog):
+class NalogaIzlociVsiljivca(GeneratorNalogSolskiSlovar):
 
     IME = 'Izloči vsiljivca'
     NAVODILA = 'Izloči vsiljivca'
-    
-    def __init__(self, *args, **kwargs):
-        super(NalogaIzlociVsiljivca, self).__init__(*args, **kwargs)
-        self.slovar = settings.SOLSKI_SLOVAR
     
     def sestavi_skupine(self):
         return {}

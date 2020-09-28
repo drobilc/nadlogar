@@ -1,16 +1,11 @@
-from .generator_nalog import GeneratorNalog
-from django.conf import settings
+from .generator_nalog import GeneratorNalogSolskiSlovar
 from lxml import etree
 import random
 
-class NalogaVstaviUstreznoObliko(GeneratorNalog):
+class NalogaVstaviUstreznoObliko(GeneratorNalogSolskiSlovar):
 
     IME = 'Vstavi ustrezno obliko besede'
     NAVODILA = 'Postavi besede v ustrezno obliko in dopolni povedi.'
-    
-    def __init__(self, *args, **kwargs):
-        super(NalogaVstaviUstreznoObliko, self).__init__(*args, **kwargs)
-        self.slovar = settings.SOLSKI_SLOVAR
     
     def generiraj_primere(self, stevilo_primerov=6):
         self.zgledi = self.slovar.xpath('//geslo/pomen/S-zgled')

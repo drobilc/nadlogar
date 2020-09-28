@@ -1,16 +1,11 @@
-from .generator_nalog import GeneratorNalog
-from django.conf import settings
+from .generator_nalog import GeneratorNalogSolskiSlovar
 from lxml import etree
 import random
 
-class NalogaDolociSlovnicnoStevilo(GeneratorNalog):
+class NalogaDolociSlovnicnoStevilo(GeneratorNalogSolskiSlovar):
 
     IME = 'Določevanje slovničnega števila'
     NAVODILA = 'Besedam določi slovnično število in jih vstavi v preglednico.'
-    
-    def __init__(self, *args, **kwargs):
-        super(NalogaDolociSlovnicnoStevilo, self).__init__(*args, **kwargs)
-        self.slovar = settings.SOLSKI_SLOVAR
     
     def generiraj_primere(self, stevilo_primerov=6):
         gesla = self.slovar.xpath('//geslo[oblike/dvojina/following-sibling::množina]')
