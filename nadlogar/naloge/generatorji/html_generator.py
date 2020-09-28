@@ -40,6 +40,12 @@ class HtmlGenerator(Visitor):
 
         elif isinstance(generator, NalogaGlasVsiljivec):
             self.visit_glas_vsiljivec_naloga(naloga, generator, naloga_html)
+        
+        elif isinstance(generator, NalogaPoisciZenskoUstreznico):
+            self.visit_poisci_zensko_ustreznico_naloga(naloga, generator, naloga_html)
+        
+        elif isinstance(generator, NalogaPoisciMoskoUstreznico):
+            self.visit_poisci_mosko_ustreznico_naloga(naloga, generator, naloga_html)
 
         return naloga_html
     
@@ -132,3 +138,21 @@ class HtmlGenerator(Visitor):
                 self._ustvari_element_tekst(vrstica, 'td', glas)
 
         return vsebnik
+    
+    def visit_poisci_zensko_ustreznico_naloga(self, naloga, generator: NalogaPoisciZenskoUstreznico, naloga_html):
+        seznam_primerov = self._ustvari_seznam_primerov(naloga_html)
+        for primer in naloga.primeri():
+            primer_element = self._ustvari_primer(seznam_primerov)
+            self._ustvari_element_tekst(primer_element, 'span', primer['maskulinativ'])
+            self._ustvari_element_tekst(primer_element, 'span', ' - ____________________')
+            
+        return seznam_primerov
+    
+    def visit_poisci_mosko_ustreznico_naloga(self, naloga, generator: NalogaPoisciZenskoUstreznico, naloga_html):
+        seznam_primerov = self._ustvari_seznam_primerov(naloga_html)
+        for primer in naloga.primeri():
+            primer_element = self._ustvari_primer(seznam_primerov)
+            self._ustvari_element_tekst(primer_element, 'span', primer['feminativ'])
+            self._ustvari_element_tekst(primer_element, 'span', ' - ____________________')
+            
+        return seznam_primerov

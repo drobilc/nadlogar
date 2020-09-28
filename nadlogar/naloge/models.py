@@ -6,18 +6,6 @@ from django.db.models import Max, Min
 
 from naloge.generatorji_nalog import *
 
-# Vsi mozni tipi nalog, ki jih nasa storitev ponuja
-GENERATORJI = [
-    NalogaIzlociVsiljivcaSpol,
-    NajdiVsiljivcaBesednaVrsta,
-    NajdiVsiljivcaStevilo,
-    NajdiVsiljivcaPredmetnoPodrocje,
-    NalogaVstaviUstreznoObliko,
-    NalogaDolociSlovnicnoStevilo,
-    NalogaDolociSteviloPomenov,
-    NalogaGlasVsiljivec
-]
-
 # V prihodnosti bo morda potrebno dodati kaksne podatke uporabnikom, zato je
 # smiselno, da ze vnaprej pripravimo model za uporabnika, saj je sicer z
 # ustvarjanjem baze potrebno dosti vec dela

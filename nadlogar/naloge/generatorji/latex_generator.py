@@ -44,6 +44,10 @@ class LatexGenerator(Visitor):
             return self.visit_stevilo_pomenov_naloga(naloga, latex_document)
         elif isinstance(naloga, NalogaGlasVsiljivec):
             return self.visit_glas_vsiljivec_naloga(naloga, latex_document)
+        elif isinstance(naloga, NalogaPoisciZenskoUstreznico):
+            return self.visit_poisci_zensko_ustreznico_naloga(naloga, latex_document)
+        elif isinstance(naloga, NalogaPoisciMoskoUstreznico):
+            return self.visit_poisci_mosko_ustreznico_naloga(naloga, latex_document)
         
         return [Command('naloga', arguments=[remove_newlines(naloga.naloga.navodila)])]
     
@@ -112,3 +116,30 @@ class LatexGenerator(Visitor):
             tabela.add_hline()
         
         return [Command('naloga', arguments=[remove_newlines(naloga.naloga.navodila)])] + [center]
+    
+    def visit_poisci_zensko_ustreznico_naloga(self, naloga: NalogaPoisciZenskoUstreznico, latex_document):
+        primeri = []
+        for primer in naloga.primeri():
+            primeri.append(Command('podnaloga'))
+            primeri.extend([
+                primer['maskulinativ'],
+                Command('hspace', '10pt'),
+                '-',
+                Command('hspace', '10pt'),
+                '____________________'
+            ])
+        return [Command('naloga', arguments=[remove_newlines(naloga.naloga.navodila)])] + primeri
+    
+    def visit_poisci_mosko_ustreznico_naloga(self, naloga: NalogaPoisciMoskoUstreznico, latex_document):
+        primeri = []
+        for primer in naloga.primeri():
+            primeri.append(Command('podnaloga'))
+            primeri.extend([
+                primer['feminativ'],
+                Command('hspace', '10pt'),
+                '-',
+                Command('hspace', '10pt'),
+                '____________________'
+            ])
+        return [Command('naloga', arguments=[remove_newlines(naloga.naloga.navodila)])] + primeri
+    
