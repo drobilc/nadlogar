@@ -68,7 +68,7 @@
                 </button>
             </div>
 
-            <form action="{% url 'naloge:uredi_nalogo' delovni_list.id %}" method="post" id="uredi-nalogo">
+            <form action="{% url 'naloge:uredi_nalogo' %}" method="post" id="uredi-nalogo">
                 {% csrf_token %}
                 <div class="modal-body" id="uredi-nalogo-form">
 

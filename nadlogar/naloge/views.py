@@ -73,6 +73,8 @@ def odstranjevanje_delovnega_lista(request, id_delovnega_lista: int):
 
 @login_required
 def ustvari_delovni_list(request):
+    # Ustvarimo nov delovni list in uporabnika preusmerimo na stran za urejanje
+    # tega delovnega lista
     nov_delovni_list = DelovniList.prazen_dokument(request.user)
     nov_delovni_list.save()
     return redirect(reverse('naloge:urejanje_delovnega_lista', kwargs={'id_delovnega_lista' : nov_delovni_list.id }))
@@ -101,47 +103,63 @@ def dodaj_nalogo(request, id_delovnega_lista: int):
     return HttpResponse(status=400)
 
 @login_required
-def uredi_nalogo(request, id_delovnega_lista: int):
-    delovni_list: DelovniList = get_object_or_404(DelovniList, pk=id_delovnega_lista)
+def uredi_nalogo(request):
 
-    if request.method == 'POST':
+    if request.method != 'POST':
+        return HttpResponse(status=400)
+
+    # Pri posiljanju forme za urejanje naloge se na streznik posreduje id
+    # naloge, ki jo zeli uporabnik urediti. Ce id naloge ni posredovan na
+    # streznik vrnemo napako.
+    naloga_id = request.POST.get('naloga_id', None)
+    if naloga_id is None:
+        return HttpResponse(status=400)
+
+    # Preverimo ali obstaja naloga z iskanim id v bazi podatkov
+    try:
+        naloga = Naloga.objects.get(pk=naloga_id)
+    except Exception:
+        return HttpResponse(status=400)
+    
+    # Preverimo ali ima trenutno prijavljeni uporabnik sploh pravico urejati
+    # nalogo. Ker je vsaka naloga le na ENEM delovnem listu, lahko preverimo ali
+    # ima uporabnik sploh pravico urejati delovni list.
+    if not naloga.delovni_list.lahko_ureja(request.user):
+        raise PermissionDenied
+
+    # Ko enkrat najdemo nalogo, iz requesta najdemo se akcijo, ki jo zeli
+    # uporabnik izvesti. Ta je lahko ena izmed naslednjih moznosti:
+    #   * odstrani_nalogo - izbrisi nalogo iz delovnega lista
+    #   * premakni_gor - premakni nalogo eno mesto navzgor v delovnem listu
+    #   * premakni_dol - premakni nalogo eno mesto navzdol v delovnem listu
+    #   * ponovno_generiraj - ponovno generiraj primere naloge
+    #   * dodaj_primer - dodaj en primer k nalogi
+    #   * uredi_nalogo - sprejmi podatke obrazca za urejanje naloge, spremeni
+    #     podatke naloge in ponovno generiraj nalogo
+    action = request.POST.get('action', None)
+    if action is None:
+        return HttpResponse(status=400)
+
+    # Glede na prejeto akcijo izvedi ustrezno dejanje in podatke shrani v bazo
+    if action == 'odstrani_nalogo':
+        naloga.delete()
+    elif action == 'premakni_gor':
+        naloga.premakni_gor()
+    elif action == 'premakni_dol':
+        naloga.premakni_dol()
+    elif action == 'ponovno_generiraj':
+        naloga.ponovno_generiraj()
+        return render(request, 'naloge/naloga.html', { 'naloga': naloga, 'delovni_list': naloga.delovni_list })
+    elif action == 'dodaj_primer':
+        naloga.dodaj_primer()
+        return render(request, 'naloge/naloga.html', { 'naloga': naloga, 'delovni_list': naloga.delovni_list })
+    elif action == 'uredi_nalogo':
+        obrazec = ObrazecGenerator.generiraj_obrazec(naloga, request)
+        if obrazec.is_valid():
+            naloga.posodobi_podatke(obrazec.cleaned_data)
+            return render(request, 'naloge/naloga.html', { 'naloga': naloga, 'delovni_list': naloga.delovni_list })
         
-        # Najprej pridobimo id naloge, ki jo zeli uporabnik urediti
-        naloga_id = request.POST.get('naloga_id', None)
-        if naloga_id is None:
-            return HttpResponse(status=400)
-
-        # Nato preverimo ali naloga sploh obstaja v bazi podatkov        
-        try:
-            naloga = Naloga.objects.get(pk=naloga_id)
-        except Exception:
-            return HttpResponse(status=400)
-        
-        action = request.POST.get('action', None)
-        if action is None:
-            return HttpResponse(status=400)
-
-        if action == 'odstrani_nalogo':
-            naloga.delete()
-        elif action == 'premakni_gor':
-            naloga.premakni_gor()
-        elif action == 'premakni_dol':
-            naloga.premakni_dol()
-        elif action == 'ponovno_generiraj':
-            naloga.ponovno_generiraj()
-            return render(request, 'naloge/naloga.html', { 'naloga': naloga, 'delovni_list': delovni_list })
-        elif action == 'dodaj_primer':
-            naloga.dodaj_primer()
-            return render(request, 'naloge/naloga.html', { 'naloga': naloga, 'delovni_list': delovni_list })
-        elif action == 'uredi_nalogo':
-            obrazec = ObrazecGenerator.generiraj_obrazec(naloga, request)
-            if obrazec.is_valid():
-                naloga.posodobi_podatke(obrazec.cleaned_data)
-                return render(request, 'naloge/naloga.html', { 'naloga': naloga, 'delovni_list': delovni_list })
-            
-        return HttpResponse(status=200)
-
-    return HttpResponse(status=400)
+    return HttpResponse(status=200)
 
 class DelovniListForm(ModelForm):
     class Meta:

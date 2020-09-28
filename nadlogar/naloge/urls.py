@@ -32,6 +32,6 @@ urlpatterns = [
     path('dokument/<int:id_delovnega_lista>/dodaj_nalogo', views.dodaj_nalogo, name='dodaj_nalogo'),
     
     # Urejanje naloge iz delovnega lista za Ajax zahteve
-    path('dokument/<int:id_delovnega_lista>/uredi_nalogo', views.uredi_nalogo, name='uredi_nalogo'),
+    path('dokument/uredi_nalogo', views.uredi_nalogo, name='uredi_nalogo'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
