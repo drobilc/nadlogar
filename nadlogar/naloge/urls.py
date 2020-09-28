@@ -21,6 +21,9 @@ urlpatterns = [
 
     # Urejanje delovnega lista
     path('dokument/<int:id_delovnega_lista>/uredi', views.urejanje_delovnega_lista, name='urejanje_delovnega_lista'),
+    
+    # Odstranjevanje delovnega lista
+    path('dokument/<int:id_delovnega_lista>/odstrani', views.odstranjevanje_delovnega_lista, name='odstranjevanje_delovnega_lista'),
 
     # Generiranje pdf dokumenta iz delovnega lista
     path('dokument/<int:id_delovnega_lista>/pdf', views.generiraj_delovni_list, name='generiraj_delovni_list'),

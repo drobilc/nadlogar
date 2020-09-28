@@ -34,6 +34,9 @@ class DelovniList(TimeStampMixin):
     def __str__(self):
         return f'{self.naslov}'
     
+    def lahko_ureja(self, uporabnik):
+        return uporabnik == self.lastnik
+    
     @staticmethod
     def prazen_dokument(lastnik):
         return DelovniList(

@@ -1,5 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect, reverse
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+from django.contrib import messages
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage, InvalidPage
 from django.forms import ModelForm
 from django.http import HttpResponse
@@ -46,6 +48,28 @@ def seznam_dokumentov(request):
 def podrobnosti_delovnega_lista(request, id_delovnega_lista: int):
     test: DelovniList = get_object_or_404(DelovniList, pk=id_delovnega_lista)
     return render(request, 'testi/podrobnosti_dokumenta.html', {'delovni_list': test, 'naloge': test.naloge.all()})
+
+@login_required
+def odstranjevanje_delovnega_lista(request, id_delovnega_lista: int):
+    # Najprej poiscemo delovni list glede na prejet id
+    delovni_list: DelovniList = get_object_or_404(DelovniList, pk=id_delovnega_lista)
+
+    # Nato preverimo ali ima uporabnik sploh pravico do urejanja dokumenta. Ce
+    # je nima, sprozimo Exception.
+    if not delovni_list.lahko_ureja(request.user):
+        raise PermissionDenied
+
+    # Uporabniku sporocimo, da je bil delovni list uspesno izbrisan s pomocjo
+    # django.messages knjiznice
+    messages.add_message(request, messages.INFO, 'Delovni list "{}" je bil uspešno izbrisan.'.format(delovni_list.naslov))
+
+    # Delovni list dejansko izbrisemo, vse povezane naloge se izbrisejo, ker je
+    # brisanje kaskadno
+    delovni_list.delete()
+
+    # Uporabnika preusmerimo na seznam dokumentov, kjer se mu prikaze obvestilo,
+    # da je bil delovni list izbrisan
+    return redirect(reverse('naloge:seznam_dokumentov'))
 
 @login_required
 def ustvari_delovni_list(request):
