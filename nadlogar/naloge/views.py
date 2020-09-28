@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect, reverse
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage, InvalidPage
 from django.forms import ModelForm
 from django.http import HttpResponse
 from django.conf import settings
@@ -15,8 +16,31 @@ def index(request):
 
 @login_required
 def seznam_dokumentov(request):
-    delovni_listi = DelovniList.objects.filter(lastnik=request.user)
-    return render(request, 'testi/seznam_dokumentov.html', {'delovni_listi': delovni_listi})
+    # Ker ima uporabnik lahko vecje stevilo dokumentov je smiselno seznam
+    # razdeliti na strani. Ce je v URL dodan GET parameter stran, potem
+    # uporabniku prikazemo doloceno stran, sicer pa mu prikazemo kar prvo stran
+    # z dokumenti.
+    trenutna_stran = request.GET.get('stran', 1)
+
+    # Dobimo seznam vseh dokumentov, ki pripadajo uporabniku, uredimo jih po
+    # datumu zadnje spremembe.
+    delovni_listi = DelovniList.objects.filter(lastnik=request.user).order_by('-updated_at')
+    paginator = Paginator(delovni_listi, settings.STEVILO_DELOVNIH_LISTOV_NA_STRAN)
+
+    # Pri pridobivanju dolocene strani lahko pride do napake, ce trenutna stran
+    # ni stevilka ali ce je uporabnik presegel obseg svojih dokumentov. Ce
+    # uporabnik posreduje neveljavno stran mu prikazemo kar prvo stran. Ce
+    # uporabnik preseze stevilo strani, mu prikazemo kar zadnjo stran.
+    try:
+        seznam_delovnih_listov = paginator.page(trenutna_stran)
+    except PageNotAnInteger:
+        seznam_delovnih_listov = paginator.page(1)
+    except EmptyPage:
+        seznam_delovnih_listov = paginator.page(paginator.num_pages)
+    except InvalidPage:
+        seznam_delovnih_listov = paginator.page(1)
+
+    return render(request, 'testi/seznam_dokumentov.html', {'delovni_listi': seznam_delovnih_listov})
 
 @login_required
 def podrobnosti_delovnega_lista(request, id_delovnega_lista: int):

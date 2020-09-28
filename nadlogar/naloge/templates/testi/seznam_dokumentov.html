@@ -32,5 +32,40 @@
         {% endfor %}
     </ul>
 
+    {% if delovni_listi.has_other_pages %}
+        <nav aria-label="Navigacija po seznamu delovnih listov" class="mt-4">
+            <ul class="pagination justify-content-center">
+
+                {% if delovni_listi.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?stran={{ delovni_listi.previous_page_number }}">Prejšnja</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Prejšnja</a>
+                    </li>
+                {% endif %}
+
+                
+                {% for object in delovni_listi.paginator.page_range %}
+                    <li class="page-item {% if forloop.counter == delovni_listi.number %}active{% endif %}">
+                        <a class="page-link" href="?stran={{ forloop.counter }}">{{ forloop.counter }}</a>
+                    </li>
+                {% endfor %}
+
+                {% if delovni_listi.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?stran={{ delovni_listi.next_page_number }}">Naslednja</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Naslednja</a>
+                    </li>
+                {% endif %}
+
+            </ul>
+        </nav>
+    {% endif %}
+
 </div>
 {% endblock %}

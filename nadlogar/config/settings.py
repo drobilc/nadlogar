@@ -147,3 +147,7 @@ PRAZEN_DOKUMENT = {
 # URL naslov za prijavo uporabnika
 LOGIN_URL = '/uporabnik/login'
 LOGIN_REDIRECT_URL = '/dokumenti'
+
+# Koliko delovnih listov se prikaze na strani s seznamom delovnih listov
+# uporabnika
+STEVILO_DELOVNIH_LISTOV_NA_STRAN = 10
