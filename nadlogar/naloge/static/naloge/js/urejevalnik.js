@@ -4,6 +4,42 @@ var trenutnaNaloga = null;
 function nastaviPoslusalceObrazcev(stars) {
     stars.find('.orodna-vrstica .gumb').tooltip();
 
+    stars.find('.odstrani-primer').click(function(event) {
+        let primerElement = event.target.parentElement;
+        let seznamPrimerov = primerElement.parentElement;
+
+        // Poiscemo indeks primera v seznamu primerov
+        var indeks = Array.prototype.indexOf.call(seznamPrimerov.children, primerElement);
+
+        let naloga = $(this).closest('.naloga');
+        let urediNalogoObrazec = naloga.find('.uredi-nalogo').last();
+        let url = urediNalogoObrazec.attr('action');
+
+        let podatki = urediNalogoObrazec.serializeArray();
+        for (let i = 0; i < podatki.length; i++) {
+            if (podatki[i]['name'] == 'action')
+                podatki[i]['value'] = 'odstrani_primer';
+        }
+        podatki.push({
+            'name': 'indeks',
+            'value': indeks
+        });
+
+        $.ajax({
+            type : 'POST',
+            url :  url,
+            data : podatki,
+            success : function(response) {
+                let novaNaloga = $(response);
+                let zamenjan = naloga.replaceWith(novaNaloga);
+                nastaviPoslusalceObrazcev(novaNaloga);
+            },
+            error : function(response) {
+                console.log(response)
+            }
+        });
+    });
+
     stars.find('#vrsta-naloge').change(function(event) {
         if (typeof NAVODILA === "undefined")
             return;

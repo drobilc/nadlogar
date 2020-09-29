@@ -146,6 +146,7 @@ def uredi_nalogo(request):
     #   * premakni_dol - premakni nalogo eno mesto navzdol v delovnem listu
     #   * ponovno_generiraj - ponovno generiraj primere naloge
     #   * dodaj_primer - dodaj en primer k nalogi
+    #   * odstrani_primer - odstrani primer z indeksom i iz naloge
     #   * uredi_nalogo - sprejmi podatke obrazca za urejanje naloge, spremeni
     #     podatke naloge in ponovno generiraj nalogo
     action = request.POST.get('action', None)
@@ -164,6 +165,16 @@ def uredi_nalogo(request):
         return render(request, 'naloge/naloga.html', { 'naloga': naloga })
     elif action == 'dodaj_primer':
         naloga.dodaj_primer()
+        return render(request, 'naloge/naloga.html', { 'naloga': naloga })
+    elif action == 'odstrani_primer':
+        # Odstranjevanje primera zahteva se dodaten parameter indeks
+        indeks = request.POST.get('indeks', '')
+        try:
+            indeks = int(indeks)
+        except Exception:
+            return HttpResponse(status=400)
+        
+        naloga.odstrani_primer(indeks)
         return render(request, 'naloge/naloga.html', { 'naloga': naloga })
     elif action == 'uredi_nalogo':
         obrazec = ObrazecGenerator.generiraj_obrazec(naloga, request)

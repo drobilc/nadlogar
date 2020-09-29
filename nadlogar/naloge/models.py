@@ -158,6 +158,12 @@ class Naloga(TimeStampMixin):
         generator_nalog.dodaj_primer()
         generator_nalog.shrani()
     
+    def odstrani_primer(self, indeks):
+        self.stevilo_primerov -= 1
+        generator_nalog = self.generator_nalog()
+        generator_nalog.odstrani_primer(indeks)
+        generator_nalog.shrani()
+    
     def premakni_gor(self):
         prejsnje_naloge = self.delovni_list.naloge.filter(polozaj_v_dokumentu__lt=self.polozaj_v_dokumentu).order_by('-polozaj_v_dokumentu')
         # Ce je ta naloga prva na seznamu, potem ni kaj premikati

@@ -65,6 +65,12 @@ class GeneratorNalog(object):
         novi_primeri = self.generiraj_primere(self.naloga.stevilo_primerov)
         self.podatki['primeri'].append(novi_primeri[0])
         return self.podatki['primeri']
+    
+    def odstrani_primer(self, indeks):
+        if indeks < 0 or indeks > len(self.podatki['primeri']):
+            return
+        del self.podatki['primeri'][indeks]
+        return self.podatki['primeri']
 
 class GeneratorNalogSolskiSlovar(GeneratorNalog):
     """Posebna razlicica razreda GeneratorNalog, ki ima v spremenljivki slovar

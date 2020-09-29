@@ -62,8 +62,8 @@ class HtmlGenerator(Visitor):
         vsi_razredi = razredi + ['primer']
         primer.set('class', ' '.join(vsi_razredi))
 
-        odstrani_primer = etree.SubElement(primer, 'div')
-        odstrani_primer.set('class', 'odstrani-primer')
+        odstrani_primer = etree.SubElement(primer, 'div', {'class': 'odstrani-primer'})
+        odstrani_primer.text = '×'
 
         return primer
     

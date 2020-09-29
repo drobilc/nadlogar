@@ -4,6 +4,14 @@
 
 {% block naslov %}Delovni list - {{ delovni_list.naslov }}{% endblock %}
 
+{% block glava %}
+<script>
+    $(document).ready(function() {
+        $('.odstrani-primer').remove();
+    });
+</script>
+{% endblock %}
+
 {% block vsebina %}
 <div class="container is-narrow">
 

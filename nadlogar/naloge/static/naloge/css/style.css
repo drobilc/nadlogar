@@ -94,6 +94,11 @@
     position: relative;
 }
 
+.naloga .odstrani-primer {
+    float: right;
+    cursor: pointer;
+}
+
 /* Posebno stiliranje ikon znotraj gumbov - centrira in doda razmik na desni
 strani ikone (pred tekstom gumba) */
 .material-icons-button {
