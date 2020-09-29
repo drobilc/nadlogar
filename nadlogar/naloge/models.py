@@ -111,6 +111,9 @@ class Naloga(TimeStampMixin):
     def __str__(self):
         return f'{self.delovni_list}: {self.get_generator_display()}, stevilo_primerov: {self.stevilo_primerov}'
     
+    def generator_nalog_razred(self):
+        return Naloga.GENERATOR_DICT[self.generator]
+
     def generator_nalog(self):
         generator_razred = Naloga.GENERATOR_DICT[self.generator]
         return generator_razred(self)

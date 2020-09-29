@@ -2,6 +2,8 @@ from .visitor import Visitor
 from ..generatorji_nalog import *
 from ..models import DelovniList
 
+import string
+
 from pylatex import Document, Command, Tabular, Center
 from pylatex.utils import italic, NoEscape
 from pylatex.base_classes import Options
@@ -10,68 +12,136 @@ from pylatex.basic import NewLine
 def remove_newlines(text):
     return text.replace('\r\n', ' ').replace('\n', ' ')
 
-class LatexGenerator(Visitor):
-    
+class LatexGenerator(object):
+
+    def generatorji_nalog(self):
+        # Pri dodajanju novih nalog je potrebno dodati preslikavo med novim
+        # razredom in funkcijo, ki zna zgenerirati latex za tak tip naloge.
+
+        # Za vsak RAZRED generatorja nalog vrnemo funkcijo, ki zna generirati
+        # nalogo takega tipa. Ce naloge ni v slovarju, se naloga ne bo
+        # generirala (oziroma se bo zgeneriralo le navodilo).
+        return {
+            # Naloge tipa izloci vsiljivca
+            NalogaIzlociVsiljivcaSpol: self._generiraj_nalogo_izloci_vsiljivca,
+            NajdiVsiljivcaBesednaVrsta: self._generiraj_nalogo_izloci_vsiljivca,
+            NajdiVsiljivcaStevilo: self._generiraj_nalogo_izloci_vsiljivca,
+            NajdiVsiljivcaPredmetnoPodrocje: self._generiraj_nalogo_izloci_vsiljivca,
+
+            # Naloge tipa vstavi ustrezno obliko besede
+            NalogaVstaviUstreznoObliko: self._generiraj_nalogo_vstavi_ustrezno_obliko,
+
+            # Naloge tipa doloci slovnicno stevilo
+            NalogaDolociSlovnicnoStevilo: self._generiraj_nalogo_doloci_slovnicno_stevilo,
+
+            # Naloge tipa doloci stevilo pomenov v slovarju Francek
+            NalogaDolociSteviloPomenov: self._generiraj_nalogo_doloci_stevilo_pomenov,
+
+            # Naloge tipa izloci vsiljivca glede na glas (samoglasniki / soglasniki)
+            NalogaGlasVsiljivec: self._generiraj_nalogo_izloci_vsiljivca_glas,
+
+            # Naloge tipa poisci mosko / zensko ustreznico
+            NalogaPoisciZenskoUstreznico: self._generiraj_nalogo_poisci_zensko_ustreznico,
+            NalogaPoisciMoskoUstreznico: self._generiraj_nalogo_poisci_mosko_ustreznico,
+        }
+
     @staticmethod
-    def generate_latex(test: DelovniList):
-        latex_document = Document()
-        latex_document.documentclass = Command('documentclass', 'izpit')
+    def generiraj_latex_dokument(delovni_list: DelovniList):
+        generator = LatexGenerator()
+        latex_dokument = generator._generiraj_latex_dokument(delovni_list)
+        return latex_dokument
 
-        result = LatexGenerator().visit(test, latex_document)
-        for element in result:
-            latex_document.append(element)
-        return latex_document
+    def _generiraj_latex_dokument(self, delovni_list: DelovniList):
+        latex_dokument = Document()
+        # Dokumentu nastavimo razred `izpit`, ki vsebuje ukaze za naloge,
+        # primere in podobno.
+        latex_dokument.documentclass = Command('documentclass', 'izpit')
 
-    def visit_test(self, test: DelovniList, latex_document):
+        # Dokument je potrebno zaceti z ukazmo izpit, ki mu dodamo naslov in
+        # opis (navodila) delovnega lista.
         ukaz_izpit = Command('izpit',
-            arguments=[remove_newlines(test.naslov), '', remove_newlines(test.opis)],
+            arguments=[remove_newlines(delovni_list.naslov), '', remove_newlines(delovni_list.opis)],
             options=Options('brez vpisne', naloge=0)
         )
-        latex_ukazi = [ukaz_izpit]
-        for naloga in test.naloge.all():
-            naloga_generator = naloga.generator_nalog()
-            latex_ukazi.extend(naloga_generator.accept(self, latex_document))
-        return latex_ukazi
+        latex_dokument.append(ukaz_izpit)
+
+        # Ko smo dodali ukaz za izpit, se sprehodimo cez vse naloge in
+        # generiramo latex zanje
+        for naloga in delovni_list.naloge.all():
+            # Generiramo ukaze za doloceno nalogo
+            naloga_ukazi = self.generiraj_latex_za_nalogo(naloga, latex_dokument)
+            # Dodamo ukaze v latex dokument
+            latex_dokument.extend(naloga_ukazi)
+
+        return latex_dokument
     
-    def visit_naloga(self, naloga: GeneratorNalog, latex_document):
-        if isinstance(naloga, NalogaIzlociVsiljivca):
-            return self.visit_izloci_vsiljivca_naloga(naloga, latex_document)
-        elif isinstance(naloga, NalogaVstaviUstreznoObliko):
-            return self.visit_vstavi_ustrezno_obliko_naloga(naloga, latex_document)
-        elif isinstance(naloga, NalogaDolociSlovnicnoStevilo):
-            return self.visit_doloci_slovnicno_stevilo_naloga(naloga, latex_document)
-        elif isinstance(naloga, NalogaDolociSteviloPomenov):
-            return self.visit_stevilo_pomenov_naloga(naloga, latex_document)
-        elif isinstance(naloga, NalogaGlasVsiljivec):
-            return self.visit_glas_vsiljivec_naloga(naloga, latex_document)
-        elif isinstance(naloga, NalogaPoisciZenskoUstreznico):
-            return self.visit_poisci_zensko_ustreznico_naloga(naloga, latex_document)
-        elif isinstance(naloga, NalogaPoisciMoskoUstreznico):
-            return self.visit_poisci_mosko_ustreznico_naloga(naloga, latex_document)
-        
-        return [Command('naloga', arguments=[remove_newlines(naloga.naloga.navodila)])]
+    def generiraj_latex_za_nalogo(self, naloga, latex_dokument):
+        # Vrsto naloge lahko identificiramo glede na njen atribut `generator`.
+        # Ker zelimo, da je izgled dokumenta vsaj kolikor toliko homogen, bomo
+        # vsem nalogam zgenerirali enaka navodila.
+        naloga_navodila = [
+            Command('naloga', arguments=[remove_newlines(naloga.navodila)])
+        ]
+
+        # Glede na tip naloge poklicemo ustrezno funkcijo, ki zna zgenerirati
+        # latex za primere te naloge
+        naloga_ukazi = []
+
+        # Najprej iz naloge pridobimo razred generatorja. Slovar
+        # vsi_generatorji_nalog nam pove katera funkcija se mora izvesti, ce
+        # zelimo generirati vsebino dolocenega tipa naloge. Ce se razred naloge
+        # nahaja v slovarju vsi_generatorji_nalog poklicemo funkcijo in rezultat
+        # shranimo v seznam naloga_ukazi.
+        generator_razred = naloga.generator_nalog_razred()
+        vsi_generatorji_nalog = self.generatorji_nalog()
+        if generator_razred in vsi_generatorji_nalog:
+            # Poiscemo funkcijo, ki se mora izvesti ce zelimo generirati vsebino
+            # trenutne naloge
+            generiraj_latex_za_nalogo_funkcija = vsi_generatorji_nalog[generator_razred]
+
+            # Zgeneriramo latex ukaze za trenutno nalogo
+            generirani_ukazi = generiraj_latex_za_nalogo_funkcija(naloga, latex_dokument)
+            naloga_ukazi.extend(generirani_ukazi)
+
+        # Zdruzimo tabeli navodil in ukazov naloge in ju vrnemo
+        return naloga_navodila + naloga_ukazi
     
-    def visit_izloci_vsiljivca_naloga(self, naloga: NalogaIzlociVsiljivca, latex_document):
+    def _generiraj_nalogo_izloci_vsiljivca(self, naloga, latex_dokument):
         primeri = []
         for primer in naloga.primeri():
             primeri.append(Command('podnaloga'))
             for beseda in primer['besede']:
                 primeri.append(beseda)
                 primeri.append(Command('qquad'))
-
-        return [Command('naloga', arguments=[remove_newlines(naloga.naloga.navodila)])] + primeri[:-1]
+        
+        # Ker ne zelimo se dodatnega prostora na desni strani zadnje besede,
+        # zadnji ukaz '\quad' odstranimo iz generiranega seznama primerov
+        return primeri[:-1]
     
-    def visit_vstavi_ustrezno_obliko_naloga(self, naloga: NalogaIzlociVsiljivca, latex_document):
+    def _generiraj_nalogo_vstavi_ustrezno_obliko(self, naloga, latex_dokument):
         primeri = []
         for primer in naloga.primeri():
             primeri.append(Command('podnaloga'))
-            primeri.extend([primer['pred'], '________', ' ({}) '.format(primer['iztocnica']), primer['po']])
 
-        return [Command('naloga', arguments=[remove_newlines(naloga.naloga.navodila)])] + primeri
+            # Ce je v primer['po'] simbol (pika, vprasaj, klicaj, ...) je
+            # potrebno odstraniti zadnji presledek v ' ({}) '
+            iztocnica_niz = ' ({}) '.format(primer['iztocnica'])
+            po = primer['po'].lstrip().lower()
+            if len(po) > 0 and po[0] not in string.ascii_lowercase:
+                iztocnica_niz = iztocnica_niz.rstrip()
+
+            primeri.extend([
+                primer['pred'],
+                '________',
+                iztocnica_niz,
+                primer['po']
+            ])
+
+        return primeri
     
-    def visit_doloci_slovnicno_stevilo_naloga(self, naloga: NalogaDolociSlovnicnoStevilo, latex_document):
+    def _generiraj_nalogo_doloci_slovnicno_stevilo(self, naloga, latex_dokument):
 
-        prostor = Command('vspace', arguments=['5cm'])
+        prostor = Command('vspace', arguments=['4cm'])
 
         center = Center()
         with center.create(Tabular('|p{4cm}|p{4cm}|p{4cm}|')) as tabela:
@@ -89,9 +159,9 @@ class LatexGenerator(Visitor):
             primeri.append(center)
             primeri.append(Command('vspace', ['0.5cm']))
 
-        return [Command('naloga', arguments=[remove_newlines(naloga.naloga.navodila)])] + primeri
+        return primeri
     
-    def visit_stevilo_pomenov_naloga(self, naloga: NalogaDolociSteviloPomenov, latex_document):
+    def _generiraj_nalogo_doloci_stevilo_pomenov(self, naloga, latex_dokument):
         primeri = []
 
         maksimalno_stevilo_pomenov = max([p['stevilo_pomenov'] for p in naloga.primeri()])
@@ -104,20 +174,20 @@ class LatexGenerator(Visitor):
                 primeri.append(Command('qquad'))
                 primeri.append(i)
 
-        return [Command('naloga', arguments=[remove_newlines(naloga.naloga.navodila)])] + primeri
+        return primeri
     
-    def visit_glas_vsiljivec_naloga(self, naloga: NalogaDolociSteviloPomenov, latex_document):
+    def _generiraj_nalogo_izloci_vsiljivca_glas(self, naloga, latex_dokument):
         
         center = Center()
-        with center.create(Tabular('|c|c|c|c|c|')) as tabela:
+        with center.create(Tabular('ccccc')) as tabela:
             for primer in naloga.primeri():
                 tabela.add_hline()
                 tabela.add_row(primer['glasovi'])
             tabela.add_hline()
         
-        return [Command('naloga', arguments=[remove_newlines(naloga.naloga.navodila)])] + [center]
+        return [center]
     
-    def visit_poisci_zensko_ustreznico_naloga(self, naloga: NalogaPoisciZenskoUstreznico, latex_document):
+    def _generiraj_nalogo_poisci_zensko_ustreznico(self, naloga, latex_dokument):
         primeri = []
         for primer in naloga.primeri():
             primeri.append(Command('podnaloga'))
@@ -128,9 +198,9 @@ class LatexGenerator(Visitor):
                 Command('hspace', '10pt'),
                 '____________________'
             ])
-        return [Command('naloga', arguments=[remove_newlines(naloga.naloga.navodila)])] + primeri
+        return primeri
     
-    def visit_poisci_mosko_ustreznico_naloga(self, naloga: NalogaPoisciMoskoUstreznico, latex_document):
+    def _generiraj_nalogo_poisci_mosko_ustreznico(self, naloga, latex_dokument):
         primeri = []
         for primer in naloga.primeri():
             primeri.append(Command('podnaloga'))
@@ -141,5 +211,4 @@ class LatexGenerator(Visitor):
                 Command('hspace', '10pt'),
                 '____________________'
             ])
-        return [Command('naloga', arguments=[remove_newlines(naloga.naloga.navodila)])] + primeri
-    
+        return primeri

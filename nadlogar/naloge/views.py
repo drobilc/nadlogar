@@ -230,7 +230,7 @@ def generiraj_delovni_list(request, id_delovnega_lista: int):
     ime_datoteke = os.path.join(settings.MEDIA_ROOT, str(random_name))
 
     # S pomocjo LaTeX generatorja zgeneriramo delovni list in ga shranimo
-    dokument = LatexGenerator.generate_latex(delovni_list)
+    dokument = LatexGenerator.generiraj_latex_dokument(delovni_list)
     dokument.generate_pdf(ime_datoteke, clean=True, clean_tex=True)
 
     # Uporabnika preusmerimo na URL za dostop do pdf dokumenta
