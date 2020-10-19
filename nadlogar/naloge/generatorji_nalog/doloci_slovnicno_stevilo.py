@@ -26,4 +26,7 @@ class NalogaDolociSlovnicnoStevilo(GeneratorNalogSolskiSlovar):
         for i in range(stevilo_besed):
             besede.append(izbor[i][stevilcnost[i]])
         
+        # Nakljucno pomesaj seznam besed
+        random.shuffle(besede)
+        
         return {'besede': besede}

@@ -103,7 +103,7 @@ class HtmlGenerator(Visitor):
             tabela.set('class', 'table mt-2 table-bordered')
             naslovna_vrstica = etree.SubElement(tabela, 'tr')
             self._ustvari_element_tekst(naslovna_vrstica, 'th', 'Ednina')
-            self._ustvari_element_tekst(naslovna_vrstica, 'th', 'Dvojna')
+            self._ustvari_element_tekst(naslovna_vrstica, 'th', 'Dvojina')
             self._ustvari_element_tekst(naslovna_vrstica, 'th', 'Množina')
             ostale_vrstice = etree.SubElement(tabela, 'tr')
             etree.SubElement(ostale_vrstice, 'td')
