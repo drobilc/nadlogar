@@ -5,7 +5,7 @@ import random
 class NalogaGlasVsiljivec(GeneratorNalogSolskiSlovar):
 
     IME = 'Izloči vsiljivca - glas'
-    NAVODILA = 'Kateri glas v vrstici je vsiljivec? Obkroži samoglasnik ali soglasnik.'
+    NAVODILA = 'Med navedenimi glasovi (samoglasniki in soglasniki) v vsaki vrstici obkroži tisti glas, ki je drugačne vrste.'
     
     def privzeti_podatki(self):
         return { 'beseda': 'glasovi' }

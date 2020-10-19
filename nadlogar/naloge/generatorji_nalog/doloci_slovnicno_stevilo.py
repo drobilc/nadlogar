@@ -5,7 +5,7 @@ import random
 class NalogaDolociSlovnicnoStevilo(GeneratorNalogSolskiSlovar):
 
     IME = 'Določevanje slovničnega števila'
-    NAVODILA = 'Besedam določi slovnično število in jih vstavi v preglednico.'
+    NAVODILA = 'Navedenim besedam določi slovnično število in jih zapiši v ustrezno polje v preglednici.'
     
     def generiraj_primere(self, stevilo_primerov=6):
         gesla = self.slovar.xpath('//geslo[oblike/dvojina/following-sibling::množina]')

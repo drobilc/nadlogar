@@ -28,7 +28,7 @@ class NalogaIzlociVsiljivca(GeneratorNalogSolskiSlovar):
 class NalogaIzlociVsiljivcaSpol(NalogaIzlociVsiljivca):
 
     IME = 'Izloči vsiljivca - spol'
-    NAVODILA = 'Izloči vsiljivca glede na spol.'
+    NAVODILA = 'Med navedenimi besedami v vsaki vrstici podčrtaj tisto besedo, ki se po spolu razlikuje od drugih.'
 
     def sestavi_skupine(self):
         spoli_samostalnikov = {}
@@ -50,7 +50,7 @@ class NalogaIzlociVsiljivcaSpol(NalogaIzlociVsiljivca):
 class NajdiVsiljivcaBesednaVrsta(NalogaIzlociVsiljivca):
 
     IME = 'Izloči vsiljivca - besedna vrsta'
-    NAVODILA = 'Izloči vsiljivca glede na besedno vrsto.'
+    NAVODILA = 'Med navedenimi besedami v vsaki vrstici podčrtaj tisto besedo, ki se po besedni vrsti razlikuje od drugih.'
 
     def sestavi_skupine(self):
         besedne_vrste_iztocnic = {}
@@ -78,7 +78,7 @@ class NajdiVsiljivcaBesednaVrsta(NalogaIzlociVsiljivca):
 class NajdiVsiljivcaStevilo(NalogaIzlociVsiljivca):
 
     IME = 'Izloči vsiljivca - slovnično število'
-    NAVODILA = 'Izloči vsiljivca glede na slovnično število.'
+    NAVODILA = 'Med navedenimi besedami v vsaki vrstici podčrtaj tisto besedo, ki se po slovničnem številu razlikuje od drugih.'
 
     def sestavi_skupine(self):
         stevila_iztocnic = {'ednina': [], 'dvojina': [], 'mnozina': []}
@@ -98,7 +98,7 @@ class NajdiVsiljivcaStevilo(NalogaIzlociVsiljivca):
 class NajdiVsiljivcaPredmetnoPodrocje(NalogaIzlociVsiljivca):
 
     IME = 'Izloči vsiljivca - predmetno področje'
-    NAVODILA = 'Izloči vsiljivca glede na področje.'
+    NAVODILA = 'Med navedenimi besedami v vsaki vrstici podčrtaj tisto besedo, ki se po tematskem področju razlikuje od drugih.'
 
     def sestavi_skupine(self):
         podrocja_iztocnic = {}

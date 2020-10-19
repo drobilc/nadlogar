@@ -5,7 +5,7 @@ import random
 class NalogaVstaviUstreznoObliko(GeneratorNalogSolskiSlovar):
 
     IME = 'Vstavi ustrezno obliko besede'
-    NAVODILA = 'Postavi besede v ustrezno obliko in dopolni povedi.'
+    NAVODILA = 'Postavi besede v oklepajih v ustrezno obliko in z njimi dopolni povedi.'
     
     def generiraj_primere(self, stevilo_primerov=6):
         self.zgledi = self.slovar.xpath('//geslo/pomen/S-zgled')

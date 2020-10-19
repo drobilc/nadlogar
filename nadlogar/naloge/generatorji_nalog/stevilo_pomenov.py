@@ -5,7 +5,7 @@ import random
 class NalogaDolociSteviloPomenov(GeneratorNalogSolskiSlovar):
 
     IME = 'Določi število pomenov - Franček'
-    NAVODILA = 'Koliko pomenov imajo naslednje besede v slovarju Franček?'
+    NAVODILA = 'Navedene besede preveri v Šolskem slovarju slovenskega jezika na portalu Franček in ugotovi, koliko pomenov imajo. Obkroži pravilen odgovor.'
     
     def generiraj_primere(self, stevilo_primerov=6):
         self.stevila_pomenov = []
