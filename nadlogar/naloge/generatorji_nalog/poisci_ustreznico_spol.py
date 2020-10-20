@@ -1,6 +1,8 @@
 from .generator_nalog import GeneratorNalog
 import csv
 import random
+import os
+from django.conf import settings
 
 class NalogaPoisciZenskoUstreznico(GeneratorNalog):
 
@@ -9,7 +11,8 @@ class NalogaPoisciZenskoUstreznico(GeneratorNalog):
     
     def generiraj_primere(self, stevilo_primerov=6):
         self.iztocnice = []
-        with open('slovarji/maskulinativi_feminativi.csv', 'r', encoding='utf-8-sig') as datoteka:
+        pot_do_datoteke = os.path.join(settings.POT_DO_SLOVARJEV, 'maskulinativi_feminativi.csv')
+        with open(pot_do_datoteke, 'r', encoding='utf-8-sig') as datoteka:
             bralec = csv.DictReader(datoteka, delimiter=';')
             for vrstica in bralec:
                 self.iztocnice.append(vrstica)
@@ -29,7 +32,8 @@ class NalogaPoisciMoskoUstreznico(GeneratorNalog):
     
     def generiraj_primere(self, stevilo_primerov=6):
         self.iztocnice = []
-        with open('slovarji/maskulinativi_feminativi.csv', 'r', encoding='utf-8-sig') as datoteka:
+        pot_do_datoteke = os.path.join(settings.POT_DO_SLOVARJEV, 'maskulinativi_feminativi.csv')
+        with open(pot_do_datoteke, 'r', encoding='utf-8-sig') as datoteka:
             bralec = csv.DictReader(datoteka, delimiter=';')
             for vrstica in bralec:
                 self.iztocnice.append(vrstica)

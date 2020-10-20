@@ -1,4 +1,6 @@
 from django.conf import settings
+from lxml import etree
+import os
 
 class GeneratorNalog(object):
 
@@ -79,4 +81,9 @@ class GeneratorNalogSolskiSlovar(GeneratorNalog):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.slovar = settings.SOLSKI_SLOVAR
+
+        # Na pomnilnik preberemo celoten solski slovar, ki ga nato uporabljamo za
+        # generiranje nalog
+        ime_datoteke = os.path.join(settings.POT_DO_SLOVARJEV, 'solski_slovar.xml')
+        with open(ime_datoteke, 'r', encoding='utf-8') as slovar:
+            self.slovar = etree.parse(slovar)
