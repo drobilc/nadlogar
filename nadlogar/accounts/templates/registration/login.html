@@ -37,8 +37,8 @@
         <button class="btn btn-primary align-self-md-center mt-3" name="submit" type="submit">Potrdite</button>
     </form>
     <div class="login-links-container">
-        <div class="login-link"><a href="/uporabnik/vpis">Še niste vpisani?</a></div>
-        <div class="login-link"><a href="/uporabnik/novogeslo">Ste pozabili geslo?</a></div>
+        <div class="login-link"><a href="{% url 'racuni:registracija' %}">Še niste vpisani?</a></div>
+        <div class="login-link"><a href="{% url 'racuni:pozabljeno_geslo' %}">Ste pozabili geslo?</a></div>
     </div>
 </div>
 {% endblock %}

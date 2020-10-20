@@ -149,8 +149,14 @@ PRAZEN_DOKUMENT = {
 }
 
 # URL naslov za prijavo uporabnika
-LOGIN_URL = '/uporabnik/login'
+LOGIN_URL = '/uporabnik/prijava'
 LOGIN_REDIRECT_URL = '/dokumenti'
+LOGOUT_REDIRECT_URL = '/'
+
+# Povezave na francek.si na katere preusmerimo uporabnika v primeru, da zeli
+# ustvariti nov racun oziroma spremeniti svoje geslo
+FRANCEK_REGISTRACIJA = 'https://www.xn--franek-l2a.si/uporabnik/vpis'
+FRANCEK_POZABLJENO_GESLO = 'https://www.xn--franek-l2a.si/uporabnik/novogeslo'
 
 # Koliko delovnih listov se prikaze na strani s seznamom delovnih listov
 # uporabnika

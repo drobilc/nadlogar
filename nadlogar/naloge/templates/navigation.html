@@ -24,11 +24,11 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item" href="">Pomoč</a>
-                            <a class="dropdown-item" href="{% url 'logout' %}">Odjava</a>
+                            <a class="dropdown-item" href="{% url 'racuni:odjava' %}">Odjava</a>
                         </div>
                     </li>
                 {% else %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Prijava</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'racuni:prijava' %}">Prijava</a></li>
                 {% endif %}
             </ul>
         </div>

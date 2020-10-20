@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import redirect
+from django.conf import settings
 
-# Create your views here.
+def registracija(request):
+    return redirect(settings.FRANCEK_REGISTRACIJA)
+
+def pozabljeno_geslo(request):
+    return redirect(settings.FRANCEK_POZABLJENO_GESLO)

@@ -20,7 +20,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Django authentication system
-    path('uporabnik/', include('django.contrib.auth.urls')),
+    path('uporabnik/', include('accounts.urls', namespace='racuni')),
 
     path('', include('naloge.urls')),
 ]
