@@ -23,10 +23,19 @@ class FrancekBackend(BaseBackend):
 
 
     def authenticate(self, request, username=None, password=None):
-        francek_api = FrancekApiTest(settings.FRANCEK_API_KEY)
+        # Ce v nastavitvah ni nastavljen api kljuc za komunikacijo s Franckom,
+        # ne uporabi tega backenda.
+        if not hasattr(settings, 'FRANCEK_API_KEY') or settings.FRANCEK_API_KEY is None:
+            return None
+        
+        francek_api = FrancekApiTest(settings.FRANCEK_API_KEY, 'crkozmed')
 
         try:
-            francek_uporabnik = francek_api.link_account(username, password)
+            francek_uporabnik = francek_api.login(username, password)
+
+            # Ce uporabnik ni ucitelj, se ne more prijaviti
+            if francek_uporabnik.get_role() is not FrancekUserRole.teacher:
+                return None
         except Exception:
             # Ce je pri prijavi s Franckom prislo do napake, uporabnik ne
             # obstaja in vrnemo None

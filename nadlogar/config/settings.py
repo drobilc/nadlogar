@@ -30,6 +30,10 @@ ALLOWED_HOSTS = []
 
 # User model
 AUTH_USER_MODEL = 'naloge.Uporabnik'
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'accounts.authentication_backend.FrancekBackend'
+]
 
 # Application definition
 
