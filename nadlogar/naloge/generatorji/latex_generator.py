@@ -31,8 +31,11 @@ class LatexGenerator(object):
             # Naloge tipa vstavi ustrezno obliko besede
             NalogaVstaviUstreznoObliko: self._generiraj_nalogo_vstavi_ustrezno_obliko,
 
-            # Naloge tipa doloci slovnicno stevilo
-            NalogaDolociSlovnicnoStevilo: self._generiraj_nalogo_doloci_slovnicno_stevilo,
+            # Naloge tipa vstavi v preglednico
+            NalogaRazvrstiVPreglednico: self._generiraj_nalogo_razvrsti_v_preglednico,
+            NalogaRazvrstiVPreglednicoStevilo: self._generiraj_nalogo_razvrsti_v_preglednico,
+            NalogaRazvrstiVPreglednicoSpol: self._generiraj_nalogo_razvrsti_v_preglednico,
+            NalogaRazvrstiVPreglednicoBesednaVrsta: self._generiraj_nalogo_razvrsti_v_preglednico,
 
             # Naloge tipa doloci stevilo pomenov v slovarju Francek
             NalogaDolociSteviloPomenov: self._generiraj_nalogo_doloci_stevilo_pomenov,
@@ -139,20 +142,23 @@ class LatexGenerator(object):
 
         return primeri
     
-    def _generiraj_nalogo_doloci_slovnicno_stevilo(self, naloga, latex_dokument):
+    def _generiraj_nalogo_razvrsti_v_preglednico(self, naloga, latex_dokument):
 
-        prostor = Command('vspace', arguments=['4cm'])
+        primeri_naloge = naloga.primeri()
+
+        imena_skupin = primeri_naloge[0]['skupine']
+        nastavitve_tabele = ['p{4cm}' for skupina in imena_skupin]
 
         center = Center()
-        with center.create(Tabular('|p{4cm}|p{4cm}|p{4cm}|')) as tabela:
+        with center.create(Tabular('|{}|'.format('|'.join(nastavitve_tabele)))) as tabela:
             tabela.add_hline()
-            tabela.add_row(('EDNINA', 'DVOJINA', 'MNOŽINA'))
+            tabela.add_row(tuple(imena_skupin))
             tabela.add_hline()
-            tabela.add_row((prostor, '', ''))
+            tabela.add_row(tuple([Command('vspace', arguments=['4cm'])] * len(imena_skupin)))
             tabela.add_hline()
 
         primeri = []
-        for primer in naloga.primeri():
+        for primer in primeri_naloge:
             primeri.append(Command('podnaloga'))
             primeri.extend([', '.join(primer['besede'])])
             primeri.append(Command('vspace', ['0.5cm']))

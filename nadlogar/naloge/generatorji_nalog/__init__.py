@@ -1,10 +1,10 @@
 from .generator_nalog import GeneratorNalog
 from .izloci_vsiljivca import *
-from .vstavi_ustrezno_obliko import NalogaVstaviUstreznoObliko
-from .doloci_slovnicno_stevilo import NalogaDolociSlovnicnoStevilo
-from .stevilo_pomenov import NalogaDolociSteviloPomenov
-from .vsiljivec_glas import NalogaGlasVsiljivec
-from .poisci_ustreznico_spol import NalogaPoisciZenskoUstreznico, NalogaPoisciMoskoUstreznico
+from .vstavi_ustrezno_obliko import *
+from .doloci_slovnicno_stevilo import *
+from .stevilo_pomenov import *
+from .vsiljivec_glas import *
+from .poisci_ustreznico_spol import *
 
 GENERATORJI = [
     NalogaIzlociVsiljivcaSpol,
@@ -12,7 +12,12 @@ GENERATORJI = [
     NajdiVsiljivcaStevilo,
     NajdiVsiljivcaPredmetnoPodrocje,
     NalogaVstaviUstreznoObliko,
-    NalogaDolociSlovnicnoStevilo,
+    
+    NalogaRazvrstiVPreglednico,
+    NalogaRazvrstiVPreglednicoStevilo,
+    NalogaRazvrstiVPreglednicoSpol,
+    NalogaRazvrstiVPreglednicoBesednaVrsta,
+
     NalogaDolociSteviloPomenov,
     NalogaGlasVsiljivec,
     NalogaPoisciZenskoUstreznico,

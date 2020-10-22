@@ -32,8 +32,8 @@ class HtmlGenerator(Visitor):
         elif isinstance(generator, NalogaVstaviUstreznoObliko):
             self.visit_vstavi_ustrezno_obliko_naloga(naloga, generator, naloga_html)
 
-        elif isinstance(generator, NalogaDolociSlovnicnoStevilo):
-            self.visit_doloci_slovnicno_stevilo_naloga(naloga, generator, naloga_html)
+        elif isinstance(generator, NalogaRazvrstiVPreglednico):
+            self.visit_razvrsti_v_preglednico_naloga(naloga, generator, naloga_html)
 
         elif isinstance(generator, NalogaDolociSteviloPomenov):
             self.visit_stevilo_pomenov_naloga(naloga, generator, naloga_html)
@@ -96,20 +96,17 @@ class HtmlGenerator(Visitor):
 
         return seznam_primerov
     
-    def visit_doloci_slovnicno_stevilo_naloga(self, naloga, generator: NalogaDolociSlovnicnoStevilo, naloga_html):
+    def visit_razvrsti_v_preglednico_naloga(self, naloga, generator, naloga_html):
         seznam_primerov = self._ustvari_seznam_primerov(naloga_html)
         for primer in naloga.primeri():
 
             tabela = etree.Element('table')
             tabela.set('class', 'table mt-2 table-bordered')
             naslovna_vrstica = etree.SubElement(tabela, 'tr')
-            self._ustvari_element_tekst(naslovna_vrstica, 'th', 'Ednina')
-            self._ustvari_element_tekst(naslovna_vrstica, 'th', 'Dvojina')
-            self._ustvari_element_tekst(naslovna_vrstica, 'th', 'Množina')
             ostale_vrstice = etree.SubElement(tabela, 'tr')
-            etree.SubElement(ostale_vrstice, 'td')
-            etree.SubElement(ostale_vrstice, 'td')
-            etree.SubElement(ostale_vrstice, 'td')
+            for skupina in primer['skupine']:
+                self._ustvari_element_tekst(naslovna_vrstica, 'th', skupina)
+                etree.SubElement(ostale_vrstice, 'td')
             ostale_vrstice.set('style', 'height: 100px')
 
             primer_element = self._ustvari_primer(seznam_primerov, razredi=['mt-3'])
