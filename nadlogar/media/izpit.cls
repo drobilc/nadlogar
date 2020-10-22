@@ -117,7 +117,8 @@
 \parindent 1em
 \pagestyle{empty}
 
-\def\v@predizpitom{-12mm}
+\def\v@predizpitom{0mm}
+\def\v@podglavo{3em}
 % presledki pred in za naslovi nalogami in podnalog
 \def\v@mednalogami{2em}
 \def\v@medpodnalogami{0.75em}
@@ -308,7 +309,7 @@
   }%
   }%
   
-  \addvspace{\v@mednalogami}
+  \addvspace{\v@podglavo}
   \@afterindentfalse%
   \@afterheading%
 }
