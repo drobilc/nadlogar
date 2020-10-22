@@ -18,9 +18,10 @@ class NalogaGlasVsiljivec(GeneratorNalogSolskiSlovar):
         return [self.generiraj_primer(glas) for glas in beseda]
     
     def generiraj_primer(self, glas):
+        glas = glas.lower()
         samoglasniki, soglasniki = 'aeiou', 'bcčdfghjklmnprsštvzž'
         glasovi = [glas]
-        if glas.lower() in samoglasniki:
+        if glas in samoglasniki:
             glasovi.extend(random.sample(soglasniki, k=4))
         else:
             glasovi.extend(random.sample(samoglasniki, k=4))
