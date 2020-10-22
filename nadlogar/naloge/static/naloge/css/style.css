@@ -85,9 +85,13 @@
     width: 100%;
 }
 
-/* Seznam primerov v nalogi ima crke namesto pik */
-.naloga ul {
-    list-style-type: lower-alpha;
+/* Seznam primerov v nalogi ima crke namesto pik. Zelimo, da se namesto pike za
+crko prikaze zaklepaj. */
+.naloga ul { counter-reset: list; }
+.naloga ul > li { list-style: none; }
+.naloga ul > li:before {
+    content: counter(list, lower-alpha) ") ";
+    counter-increment: list;
 }
 
 .naloga .primer {
