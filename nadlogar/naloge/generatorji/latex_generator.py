@@ -61,7 +61,7 @@ class LatexGenerator(object):
         # opis (navodila) delovnega lista.
         ukaz_izpit = Command('izpit',
             arguments=[remove_newlines(delovni_list.naslov), '', remove_newlines(delovni_list.opis)],
-            options=Options('brez vpisne', naloge=0)
+            options=Options(naloge=0)
         )
         latex_dokument.append(ukaz_izpit)
 

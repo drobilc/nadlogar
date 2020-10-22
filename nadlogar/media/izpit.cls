@@ -103,6 +103,8 @@
 }
 \RequirePackage{geometry}
 \RequirePackage{tikz}
+\RequirePackage{fancyhdr}
+\RequirePackage{lastpage}
 
 %------------------------------------------------------------------------(end)
 %                                Dimenzije
@@ -112,13 +114,19 @@
   a4paper,
   hmargin = 25mm,
   vmargin = 15mm,
-  marginparsep = 8mm
+  marginparsep = 8mm,
+  includefoot
 }
 \parindent 1em
-\pagestyle{empty}
+
+% Stevilcenje strani
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\cfoot{\thepage \hspace{1pt} / \pageref{LastPage}}
 
 \def\v@predizpitom{0mm}
-\def\v@podglavo{3em}
+\def\v@podglavo{4em}
 % presledki pred in za naslovi nalogami in podnalog
 \def\v@mednalogami{2em}
 \def\v@medpodnalogami{0.75em}
@@ -134,10 +142,9 @@
 \def\v@predpravili{2mm}
 \def\v@predimenom{6mm}
 \def\v@predvpisno{6pt}
-\def\x@visinavpisne{0.7}
-\def\x@sirinavpisne{0.432}
-\def\x@visinaocene{\x@visinavpisne}
-\def\x@sirinaocene{\x@visinavpisne}
+\def\x@sirinavpisne{0.432*8}
+\def\x@visinaocene{0.7}
+\def\x@sirinaocene{\x@visinaocene}
 \def\x@velikostucilnice{0.15}
 \def\h@velikostsedeza{3.1pt}
 
@@ -149,7 +156,7 @@
 \newcommand{\@sloeng}[2]{\ifthenelse{\boolean{@slovenski}}{#1}{#2}}
 
 \newcommand{\ime@oznaka}{\@sloeng{Ime in priimek}{Name and surname}}
-\newcommand{\vpisna@oznaka}{\@sloeng{Vpisna \v{s}tevilka}{Student ID}}
+\newcommand{\vpisna@oznaka}{\@sloeng{Razred}{Class}}
 \newcommand{\sedez@oznaka}{\@sloeng{Sede\v{z}}{Seat}}
 \newcommand{\naloga@oznaka}[1]{\@sloeng{#1. naloga}{Question #1}}
 
@@ -274,9 +281,8 @@
       }%
       \@ifthen{\boolean{@vpisnastevilka}}{%
         \begin{tikzpicture}
-          \draw[xscale=\x@sirinavpisne, yscale=\x@visinavpisne, very thin]
-            (0, 0) grid (8, 1);%
-          \draw[overlay, xscale=\x@sirinavpisne] (8, 0) node[below left=0pt, inner xsep=0pt] {\footnotesize \vpisna@oznaka};
+          \draw[very thin] (0, 0) -- (\x@sirinavpisne, 0);%
+          \draw[overlay] (0, 0) node[below right=0pt, inner xsep=0pt] {\footnotesize \vpisna@oznaka};
         \end{tikzpicture}
       }%
     }%
