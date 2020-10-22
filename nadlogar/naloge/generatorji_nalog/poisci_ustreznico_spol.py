@@ -7,7 +7,7 @@ from django.conf import settings
 class NalogaPoisciZenskoUstreznico(GeneratorNalog):
 
     IME = 'Poišči žensko ustreznico'
-    NAVODILA = 'Kako poimenujemo ženske, ki opravljajo določen poklic?'
+    NAVODILA = 'Zapiši poimenovanja za ženski spol, ki tvorijo parna nasprotja navedenim poimenovanjem za moški spol.'
     
     def generiraj_primere(self, stevilo_primerov=6):
         self.iztocnice = []
@@ -28,7 +28,7 @@ class NalogaPoisciZenskoUstreznico(GeneratorNalog):
 class NalogaPoisciMoskoUstreznico(GeneratorNalog):
 
     IME = 'Poišči moško ustreznico'
-    NAVODILA = 'Poimenuj moške, ki opravljajo določen poklic.'
+    NAVODILA = 'Zapiši poimenovanja za moški spol, ki tvorijo parna nasprotja navedenim poimenovanjem za ženski spol.'
     
     def generiraj_primere(self, stevilo_primerov=6):
         self.iztocnice = []

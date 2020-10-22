@@ -132,7 +132,7 @@ class LatexGenerator(object):
 
             primeri.extend([
                 primer['pred'],
-                '________',
+                '________________ ',
                 iztocnica_niz,
                 primer['po']
             ])

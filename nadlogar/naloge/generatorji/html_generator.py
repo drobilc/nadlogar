@@ -54,7 +54,7 @@ class HtmlGenerator(Visitor):
         seznam_primerov.set('class', 'primeri')
         return seznam_primerov
     
-    def _ustvari_primer(self, seznam_primerov, tag='li', text=None, razredi=[]):
+    def _ustvari_primer(self, seznam_primerov, tag='li', text=None, razredi=[], prikazi_krizec=True):
         primer = etree.SubElement(seznam_primerov, tag)
         if text is not None:
             primer.text = text
@@ -62,8 +62,9 @@ class HtmlGenerator(Visitor):
         vsi_razredi = razredi + ['primer']
         primer.set('class', ' '.join(vsi_razredi))
 
-        odstrani_primer = etree.SubElement(primer, 'div', {'class': 'odstrani-primer'})
-        odstrani_primer.text = '×'
+        if prikazi_krizec:
+            odstrani_primer = etree.SubElement(primer, 'div', {'class': 'odstrani-primer'})
+            odstrani_primer.text = '×'
 
         return primer
     
@@ -120,24 +121,34 @@ class HtmlGenerator(Visitor):
     def visit_stevilo_pomenov_naloga(self, naloga, generator: NalogaDolociSteviloPomenov, naloga_html):
         seznam_primerov = self._ustvari_seznam_primerov(naloga_html)
         for primer in naloga.primeri():
-            primer_element = self._ustvari_primer(seznam_primerov, text=primer['beseda'])
+            primer_element = self._ustvari_primer(seznam_primerov)
+            
+            primer_podatki_element = etree.SubElement(primer_element, 'div')
+            primer_podatki_element.set('class', 'd-flex')
 
+            iztocnica_element = etree.SubElement(primer_podatki_element, 'div')
+            iztocnica_element.text = primer['beseda']
+            iztocnica_element.set('class', 'w-25')   
+
+            vsebnik = etree.SubElement(primer_podatki_element, 'div')
+            vsebnik.set('class', 'w-25 d-flex justify-content-between')
             for i in range(1, 5):
-                self._ustvari_element_tekst(primer_element, 'span', str(i))
+                self._ustvari_element_tekst(vsebnik, 'span', str(i))         
 
         return seznam_primerov
     
     def visit_glas_vsiljivec_naloga(self, naloga, generator: NalogaGlasVsiljivec, naloga_html):
-        vsebnik = etree.SubElement(naloga_html, 'div', style='text-align: center;')
+        vsebnik = etree.SubElement(naloga_html, 'div')
 
-        tabela = etree.SubElement(vsebnik, 'table')
-        tabela.set('class', 'table table-bordered')
         for primer in naloga.primeri():
-            vrstica = self._ustvari_primer(tabela, 'tr')
+            primer_element = self._ustvari_primer(vsebnik, 'div', prikazi_krizec=False)
+            vrstica = etree.SubElement(primer_element, 'div')
+            vrstica.set('class', 'w-50 d-flex justify-content-around mx-auto text-monospace border-bottom p-1')
             for glas in primer['glasovi']:
-                self._ustvari_element_tekst(vrstica, 'td', glas)
+                self._ustvari_element_tekst(vrstica, 'span', glas)
 
         return vsebnik
+
     
     def visit_poisci_zensko_ustreznico_naloga(self, naloga, generator: NalogaPoisciZenskoUstreznico, naloga_html):
         seznam_primerov = self._ustvari_seznam_primerov(naloga_html)
